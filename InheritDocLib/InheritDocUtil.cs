@@ -122,8 +122,7 @@ namespace InheritDocLib {
                     if (document != null && document.Root.Name.LocalName=="doc") {
                         if (logger != null) logger(LogLevel.Trace, $"LoadAssemblyDocuments():Loading assembly {assemblyName}");
                         var assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyFile);
-                        var typeByName = GetTypeByName(assemblyDefinition);
-                        var assemblyDocument = new AssemblyDocument(typeByName, document);
+                        var assemblyDocument = new AssemblyDocument(assemblyDefinition, document);
                         assemblyDocument.xmlDocFiles.Add(xmlDocFile);
                         assemblyDocumentByAssemblyName[assemblyName] = assemblyDocument;
                     }
@@ -142,23 +141,11 @@ namespace InheritDocLib {
                 var document = ReadXDocument(xmlFile, logger);
                 string assemblyName = document.Root.Element("assembly").Element("name").Value;
                 var assemblyDefinition = assemblyResolver.Resolve(assemblyName);
-                var typeByName = GetTypeByName(assemblyDefinition);
-                var assemblyDocument = new AssemblyDocument(typeByName, document);
+                var assemblyDocument = new AssemblyDocument(assemblyDefinition, document);
                 assemblyDocuments.Add(assemblyDocument);
             }
 
             return assemblyDocuments;
-        }
-
-        static Dictionary<string, TypeData> GetTypeByName(AssemblyDefinition assemblyDefinition) {
-            var typeDatas = assemblyDefinition.MainModule.Types.Select(x => {
-                return new TypeData {
-                    name = x.FullName,
-                    interfaceTypeNames = x.Interfaces == null ? new string[] { } : x.Interfaces.Select(y => y.FullName).ToArray(),
-                    baseTypeName = x.BaseType?.FullName
-                };
-            });
-            return typeDatas.ToDictionary(x => x.name);
         }
 
         static XDocument ReadXDocument(string xmlDocFile, Action<LogLevel, string> logger) {
@@ -174,9 +161,7 @@ namespace InheritDocLib {
         }
 
         // Compile assemblies into dictionary of types
-        static IDictionary<string, TypeDoc> Compile(ICollection<AssemblyDocument> targetAssemblyDocuments, string excludeTypeNamePatterns, Action<LogLevel, string> logger, ICollection<AssemblyDocument> libraryAssemblyDocuments = null) {
-            var assemblyDocuments = libraryAssemblyDocuments==null ? targetAssemblyDocuments : targetAssemblyDocuments.Concat(libraryAssemblyDocuments);
-
+        static IDictionary<string, TypeDoc> Compile(ICollection<AssemblyDocument> assemblyDocuments, string excludeTypeNamePatterns, Action<LogLevel, string> logger) {
             var result = new Dictionary<string, TypeDoc>();
             foreach (var assemblyDocument in assemblyDocuments) {
                 var memberElements = assemblyDocument.xDocument.Descendants("member");
@@ -423,12 +408,24 @@ namespace InheritDocLib {
 
     public class AssemblyDocument {
         public readonly Dictionary<string, TypeData> typeDataByName = new Dictionary<string, TypeData>();
+
         public readonly XDocument xDocument;
         public readonly List<string> xmlDocFiles = new List<string>();
 
-        public AssemblyDocument(Dictionary<string, TypeData> typeDataByName, XDocument xDocument) {
-            this.typeDataByName = typeDataByName;
+        public AssemblyDocument(AssemblyDefinition assemblyDefinition, XDocument xDocument) {
+            this.typeDataByName = GetTypeByName(assemblyDefinition);
             this.xDocument = xDocument;
+        }
+
+        static Dictionary<string, TypeData> GetTypeByName(AssemblyDefinition assemblyDefinition) {
+            var typeDatas = assemblyDefinition.MainModule.Types.Select(x => {
+                return new TypeData {
+                    name = x.FullName,
+                    interfaceTypeNames = x.Interfaces == null ? new string[] { } : x.Interfaces.Select(y => y.FullName).ToArray(),
+                    baseTypeName = x.BaseType?.FullName
+                };
+            });
+            return typeDatas.ToDictionary(x => x.name);
         }
     }
 

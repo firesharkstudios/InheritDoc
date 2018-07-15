@@ -49,7 +49,7 @@ namespace InheritDoc {
         [Option('f', "xml-doc-file-name-patterns", Required = false, HelpText = InheritDocUtil.XML_DOC_FILE_NAME_PATTERNS_HELP)]
         public string XmlDocFileNamePatterns { get; set; }
 
-        [Option('x', "exclude-type-name-patterns", Required = false, DefaultValue = "System.*", HelpText = InheritDocUtil.EXCLUDE_TYPE_NAME_PATTERNS_HELP)]
+        [Option('x', "exclude-type-name-patterns", Required = false, DefaultValue = null, HelpText = "No longer supported")]
         public string ExcludeTypeNamePatterns { get; set; }
 
         [Option('g', "global-source-xml-files", Required = false, DefaultValue = null, HelpText = InheritDocUtil.GLOBAL_SOURCE_XML_FILES_HELP)]

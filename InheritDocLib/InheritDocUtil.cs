@@ -295,18 +295,6 @@ namespace InheritDocLib {
                                         logger(LogLevel.Warn, $"Found multiple matching elements where name='{newMemberElementNameText}'");
                                     }
                                 }
-                                /*
-                                else if (matchingMemberElements.Count() == 1) {
-                                    var matchingTargetElements = matchingMemberElements.Single().Select(pathParts);
-                                    if (matchingTargetElements == null || matchingTargetElements.Count() == 0 || (matchingTargetElements.Count() == 1 && matchingTargetElements.Single().IsEmpty)) {
-                                        matchingMemberElement = matchingMemberElements.Single();
-                                    }
-                                }
-                                else {
-                                    logger(LogLevel.Warn, $"Found multiple matching elements where name='{newMemberElementNameText}'");
-                                    //throw new System.Exception($"Found multiple matching elements where name='{newMemberElementNameText}'");
-                                }
-                                */
 
                                 if (matchingMemberElement != null) {
                                     matchingMemberElement.CopyFrom(baseMemberElement, pathParts);

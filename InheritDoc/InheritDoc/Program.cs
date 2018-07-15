@@ -1,4 +1,20 @@
-﻿using System;
+﻿/*
+ * Copyright 2017 Fireshark Studios, LLC
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+using System;
 
 using CommandLine;
 using NLog;
@@ -16,7 +32,7 @@ namespace InheritDoc {
             var isValid = CommandLine.Parser.Default.ParseArgumentsStrict(args, options);
             if (!isValid) throw new Exception("Invalid command line");
 
-            InheritDocUtil.Run(options.BasePath, options.XmlDocFileNamePatterns, options.ExcludeTypeNamePatterns, overwriteExisting: options.OverwriteExisting, logger: Logger);
+            InheritDocUtil.Run(options.Key, options.BasePath, options.XmlDocFileNamePatterns, options.ExcludeTypeNamePatterns, overwriteExisting: options.OverwriteExisting, logger: Logger);
         }
 
         static void Logger(InheritDocLib.LogLevel logLevel, string message) {
@@ -41,6 +57,9 @@ namespace InheritDoc {
     }
 
     public class Options {
+        [Option('k', "key", Required = false, HelpText = InheritDocUtil.LICENSE_KEY_HELP)]
+        public string Key { get; set; }
+
         [Option('b', "base", Required = false, HelpText = "Base path to look for XML document files (omit for current directory)")]
         public string BasePath { get; set; }
 

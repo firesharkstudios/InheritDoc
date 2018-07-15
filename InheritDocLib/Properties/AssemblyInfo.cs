@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("InheritDoc")]
-[assembly: AssemblyDescription("Command line tool that post processes XML documentation files to support an &lt;inheritdoc/&gt; tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDocLib NuGet package for a programmatic interface.")]
+[assembly: AssemblyTitle("InheritDocLib")]
+[assembly: AssemblyDescription("Library that post processes XML documentation files to support an &lt;inheritdoc/&gt; tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDoc NuGet package for a command line interface.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Fireshark Studios, LLC")]
 [assembly: AssemblyProduct("InheritDoc")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8d70ad37-9599-474b-b231-5447ddfbfd31")]
+[assembly: Guid("390f170d-8730-4114-a3da-eda42541da86")]
 
 // Version information for an assembly consists of the following four values:
 //

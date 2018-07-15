@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("InheritDoc")]
-[assembly: AssemblyDescription("Command line tool that post processes XML documentation files to support an &lt;inheritdoc/&gt; tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDocLib NuGet package for a programmatic interface.")]
+[assembly: AssemblyDescription("Command line tool that post processes XML documentation files to support an &lt;inheritdoc/&gt; tag allowing inheriting XML comments from base types, interfaces, and similar methods. See the separate InheritDocLib NuGet package for a programmatic interface.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Fireshark Studios, LLC")]
 [assembly: AssemblyProduct("InheritDoc")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.1.10")]
-[assembly: AssemblyFileVersion("1.1.1.10")]
+[assembly: AssemblyVersion("1.0.0.311")]
+[assembly: AssemblyFileVersion("1.0.0.311")]

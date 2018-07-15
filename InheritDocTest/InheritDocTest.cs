@@ -199,6 +199,7 @@ namespace InheritDocTest {
             }
         }
 
+        /*
         [TestMethod]
         public void LibraryTest() {
             var basePath = Path.Combine(Environment.CurrentDirectory, @"..\..");
@@ -216,6 +217,7 @@ namespace InheritDocTest {
                 );
             }
         }
+        */
 
         static void CheckForClassAComments(XDocument xDocument, string className, string rootSummaryValue = null, string rootRemarksValue = null, string propertySummaryValue = null, string propertyValueValue = null, string methodSummaryValue = null) {
             // Check root tags

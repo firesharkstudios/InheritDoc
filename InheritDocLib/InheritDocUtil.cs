@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
-using System.Text.RegularExpressions;
 
 using Mono.Cecil;
 
@@ -36,7 +36,7 @@ namespace InheritDocLib {
         /// <param name="overwriteExisting">Set to false to create new .new.xml files.  Set to true to replace the existing .xml files.</param>
         /// <param name="logger">Set to optional callback to receive log messages.</param>
         /// <returns>List of XML documentation files modified (relative to base path).</returns>
-        public static ICollection<string> Run(string basePath = null, string xmlExtraSearchPath = null, string xmlDocFileNamePatterns = null, string excludeTypeNamePatterns = "System.*", bool overwriteExisting = false, Action<LogLevel, string> logger = null) {
+        public static ICollection<string> Run(string basePath = null, string xmlDocFileNamePatterns = null, string excludeTypeNamePatterns = "System.*", bool overwriteExisting = false, Action<LogLevel, string> logger = null) {
             if (logger != null) logger(LogLevel.Info, $"InheritDoc(v{Assembly.GetExecutingAssembly().GetName().Version}).Run():basePath={basePath},xmlDocFileNamePatterns={xmlDocFileNamePatterns},excludeTypeNamePatterns={excludeTypeNamePatterns},overwriteExisting ={overwriteExisting}");
 
             string newBasePath = string.IsNullOrEmpty(basePath) ? Environment.CurrentDirectory : basePath;
@@ -44,13 +44,7 @@ namespace InheritDocLib {
             var assemblyFiles = GetAssemblyFiles(newBasePath, xmlDocFileNamePatterns, logger);
             var assemblyDocuments = LoadAssemblyDocuments(assemblyFiles, logger);
 
-            ICollection<AssemblyDocument> libraryAssemblyDocuments = null;
-            if (!string.IsNullOrEmpty(xmlExtraSearchPath)) {
-                var libraryAssemblyFiles = GetAssemblyFiles(xmlExtraSearchPath, xmlDocFileNamePatterns, logger);
-                libraryAssemblyDocuments = LoadAssemblyDocuments(assemblyFiles, logger);
-            }
-
-            var typeDocByName = Compile(assemblyDocuments, excludeTypeNamePatterns, logger, libraryAssemblyDocuments: libraryAssemblyDocuments);
+            var typeDocByName = Compile(assemblyDocuments, excludeTypeNamePatterns, logger);
             var sortedTypeNames = Sort(typeDocByName);
             var count = ReplaceInheritDocs(assemblyDocuments, typeDocByName, sortedTypeNames, logger);
             if (count == 0) {
@@ -64,90 +58,6 @@ namespace InheritDocLib {
                 return newXmlDocFiles;
             }
         }
-
-        /*
-        static ICollection<AssemblyDocument> LoadAssemblyDocuments(string basePath, string xmlDocFileNamePatterns, Action<LogLevel, string> logger) {
-            if (logger != null) logger(LogLevel.Debug, $"LoadAssemblyDocuments():basePath={basePath},xmlDocFileNamePatterns={xmlDocFileNamePatterns}");
-
-            // Find all candidate xml files that meet filter
-            List<string> filteredXmlFiles = new List<string>();
-            var allXmlFiles = Directory.GetFiles(basePath, "*.xml", SearchOption.AllDirectories);
-            var filterRegexes = string.IsNullOrEmpty(xmlDocFileNamePatterns) ? null : xmlDocFileNamePatterns.Split(',').Select(x => StringX.WildCardToRegex(x.Trim()));
-            foreach (var xmlFile in allXmlFiles) {
-                string xmlFileName = Path.GetFileName(xmlFile);
-                if (filterRegexes == null || filterRegexes.Any(x => x.IsMatch(xmlFileName))) {
-                    filteredXmlFiles.Add(xmlFile);
-                }
-            }
-
-            // Get assembly for each xml file
-            Dictionary<string, AssemblyDocument> assemblyDocumentByAssemblyName = new Dictionary<string, AssemblyDocument>();
-
-            foreach (var xmlDocFile in filteredXmlFiles) {
-                var directoryName = Path.GetDirectoryName(xmlDocFile);
-                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(xmlDocFile);
-
-                var document = ReadXDocument(xmlDocFile, logger);
-
-                var matchingAssemblyFiles = new List<string>();
-                matchingAssemblyFiles.AddRange(Directory.GetFiles(directoryName, $"{fileNameWithoutExtension}.exe"));
-                matchingAssemblyFiles.AddRange(Directory.GetFiles(directoryName, $"{fileNameWithoutExtension}.dll"));
-                if (matchingAssemblyFiles.Count() == 0) {
-                    if (logger != null) logger(LogLevel.Trace, $"GetAssemblyFiles():Could not find assembly for xml file {xmlDocFile} ({string.Join(",", matchingAssemblyFiles)})");
-
-                    string assemblyName = document.Root.Element("assembly").Element("name").Value;
-                    try {
-                        AssemblyDefinition myLibrary = AssemblyDefinition.ReadAssembly(assemblyName);
-                    }
-                    catch (Exception e) {
-                        if (logger != null) logger(LogLevel.Info, $"GetAssemblyFiles():Could not read assembly {assemblyName}");
-                    }
-                }
-                else if (matchingAssemblyFiles.Count() == 1) {
-                    string assemblyFile = matchingAssemblyFiles.First();
-
-                    string assemblyName = null;
-                    try {
-                        assemblyName = AssemblyName.GetAssemblyName(assemblyFile).ToString();
-                    }
-                    catch (Exception e) {
-                        if (logger != null) logger(LogLevel.Warn, e.Message);
-                        continue;
-                    }
-
-                    //var xmlDocFile = Path.Combine(Path.GetDirectoryName(assemblyFile), $"{Path.GetFileNameWithoutExtension(assemblyFile)}.xml");
-                    if (logger != null) logger(LogLevel.Trace, $"LoadAssemblyDocuments():assemblyFile={assemblyFile},assemblyName={assemblyName},xmlDocFile={xmlDocFile}");
-                    if (assemblyDocumentByAssemblyName.TryGetValue(assemblyName, out AssemblyDocument existingAssemblyDocument)) {
-                        if (logger != null) logger(LogLevel.Trace, $"LoadAssemblyDocuments():Already loaded assembly {assemblyName}");
-                        existingAssemblyDocument.xmlDocFiles.Add(xmlDocFile);
-                    }
-                    else {
-                        if (document != null && document.Root.Name.LocalName == "doc") {
-                            if (logger != null) logger(LogLevel.Trace, $"LoadAssemblyDocuments():Loading assembly {assemblyName}");
-                            AssemblyDefinition myLibrary = AssemblyDefinition.ReadAssembly(assemblyFile);
-                            var typeDatas = myLibrary.MainModule.Types.Select(x => {
-                                return new TypeData {
-                                    name = x.FullName,
-                                    interfaceTypeNames = x.Interfaces == null ? new string[] { } : x.Interfaces.Select(y => y.FullName).ToArray(),
-                                    baseTypeName = x.BaseType?.FullName
-                                };
-                            });
-                            var typeByName = typeDatas.ToDictionary(x => x.name);
-                            var assemblyDocument = new AssemblyDocument(typeByName, document);
-                            assemblyDocument.xmlDocFiles.Add(xmlDocFile);
-                            assemblyDocumentByAssemblyName[assemblyName] = assemblyDocument;
-                        }
-                    }
-
-                }
-                else if (matchingAssemblyFiles.Count() > 1) {
-                    if (logger != null) logger(LogLevel.Warn, $"GetAssemblyFiles():Found too many assemblies for xml file {xmlDocFile} ({string.Join(",", matchingAssemblyFiles)})");
-                }
-
-            }
-            return assemblyDocumentByAssemblyName.Values;
-        }
-        */
 
         static ICollection<string> GetAssemblyFiles(string basePath, string xmlDocFileNamePatterns, Action<LogLevel, string> logger) {
             // Find all candidate xml files that meet filter

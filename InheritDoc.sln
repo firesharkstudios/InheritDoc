@@ -36,6 +36,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "www.inheritdoc.io", "www.in
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "55975"
+		SlnRelativePath = "www.inheritdoc.io\"
 	EndProjectSection
 EndProject
 Global

@@ -36,7 +36,7 @@ namespace InheritDocLib {
         /// <param name="overwriteExisting">Set to false to create new .new.xml files.  Set to true to replace the existing .xml files.</param>
         /// <param name="logger">Set to optional callback to receive log messages.</param>
         /// <returns>List of XML documentation files modified (relative to base path).</returns>
-        public static ICollection<string> Run(string basePath = null, string xmlDocFileNamePatterns = null, string excludeTypeNamePatterns = "System.*", bool overwriteExisting = false, Action<LogLevel, string> logger = null) {
+        public static ICollection<string> Run(string basePath = null, string xmlDocFileNamePatterns = null, string excludeTypeNamePatterns = "System.*", string globalSourceXmlFiles = null, bool overwriteExisting = false, Action<LogLevel, string> logger = null) {
             if (logger != null) logger(LogLevel.Info, $"InheritDoc(v{Assembly.GetExecutingAssembly().GetName().Version}).Run():basePath={basePath},xmlDocFileNamePatterns={xmlDocFileNamePatterns},excludeTypeNamePatterns={excludeTypeNamePatterns},overwriteExisting ={overwriteExisting}");
 
             string newBasePath = string.IsNullOrEmpty(basePath) ? Environment.CurrentDirectory : basePath;
@@ -44,7 +44,10 @@ namespace InheritDocLib {
             var assemblyFiles = GetAssemblyFiles(newBasePath, xmlDocFileNamePatterns, logger);
             var assemblyDocuments = LoadAssemblyDocuments(assemblyFiles, logger);
 
-            var typeDocByName = Compile(assemblyDocuments, excludeTypeNamePatterns, logger);
+            var globalAssemblyDocuments = LoadGlobalAssemblyDocuments(globalSourceXmlFiles, logger);
+
+            var allAssemblyDocuments = assemblyDocuments.Concat(globalAssemblyDocuments).ToArray();
+            var typeDocByName = Compile(allAssemblyDocuments, excludeTypeNamePatterns, logger);
             var sortedTypeNames = Sort(typeDocByName);
             var count = ReplaceInheritDocs(assemblyDocuments, typeDocByName, sortedTypeNames, logger);
             if (count == 0) {
@@ -118,15 +121,8 @@ namespace InheritDocLib {
                     var document = ReadXDocument(xmlDocFile, logger);
                     if (document != null && document.Root.Name.LocalName=="doc") {
                         if (logger != null) logger(LogLevel.Trace, $"LoadAssemblyDocuments():Loading assembly {assemblyName}");
-                        AssemblyDefinition myLibrary = AssemblyDefinition.ReadAssembly(assemblyFile);
-                        var typeDatas = myLibrary.MainModule.Types.Select(x => {
-                            return new TypeData {
-                                name = x.FullName,
-                                interfaceTypeNames = x.Interfaces == null ? new string[] { } : x.Interfaces.Select(y => y.FullName).ToArray(),
-                                baseTypeName = x.BaseType?.FullName
-                            };
-                        });
-                        var typeByName = typeDatas.ToDictionary(x => x.name);
+                        var assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyFile);
+                        var typeByName = GetTypeByName(assemblyDefinition);
                         var assemblyDocument = new AssemblyDocument(typeByName, document);
                         assemblyDocument.xmlDocFiles.Add(xmlDocFile);
                         assemblyDocumentByAssemblyName[assemblyName] = assemblyDocument;
@@ -134,6 +130,35 @@ namespace InheritDocLib {
                 }
             }
             return assemblyDocumentByAssemblyName.Values;
+        }
+
+        static ICollection<AssemblyDocument> LoadGlobalAssemblyDocuments(string globalSourceXmlFiles, Action<LogLevel, string> logger) {
+            if (string.IsNullOrEmpty(globalSourceXmlFiles)) return new AssemblyDocument[] { };
+
+            var assemblyResolver = new DefaultAssemblyResolver();
+
+            List<AssemblyDocument> assemblyDocuments = new List<AssemblyDocument>();
+            foreach (var xmlFile in globalSourceXmlFiles.Split(',')) {
+                var document = ReadXDocument(xmlFile, logger);
+                string assemblyName = document.Root.Element("assembly").Element("name").Value;
+                var assemblyDefinition = assemblyResolver.Resolve(assemblyName);
+                var typeByName = GetTypeByName(assemblyDefinition);
+                var assemblyDocument = new AssemblyDocument(typeByName, document);
+                assemblyDocuments.Add(assemblyDocument);
+            }
+
+            return assemblyDocuments;
+        }
+
+        static Dictionary<string, TypeData> GetTypeByName(AssemblyDefinition assemblyDefinition) {
+            var typeDatas = assemblyDefinition.MainModule.Types.Select(x => {
+                return new TypeData {
+                    name = x.FullName,
+                    interfaceTypeNames = x.Interfaces == null ? new string[] { } : x.Interfaces.Select(y => y.FullName).ToArray(),
+                    baseTypeName = x.BaseType?.FullName
+                };
+            });
+            return typeDatas.ToDictionary(x => x.name);
         }
 
         static XDocument ReadXDocument(string xmlDocFile, Action<LogLevel, string> logger) {

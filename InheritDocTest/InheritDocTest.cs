@@ -199,25 +199,22 @@ namespace InheritDocTest {
             }
         }
 
-        /*
         [TestMethod]
         public void LibraryTest() {
             var basePath = Path.Combine(Environment.CurrentDirectory, @"..\..");
-            var libraryPath = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.X";
-            var newFileNames = InheritDocUtil.Run(basePath: basePath, xmlExtraSearchPath: libraryPath, overwriteExisting: false, logger: Logger);
+            var globalSourceXmlFiles = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.X\mscorlib.xml";
+            var newFileNames = InheritDocUtil.Run(basePath: basePath, globalSourceXmlFiles: globalSourceXmlFiles, overwriteExisting: false, excludeTypeNamePatterns: null, logger: Logger);
             var fileName = newFileNames.Where(x => Path.GetFileName(x).StartsWith("InheritDocTest.")).First();
             using (var streamReader = new StreamReader(fileName)) {
                 var xDocument = XDocument.Load(streamReader);
 
-                CheckForMethodSummaryComments(
+                CheckForClassSummaryComments(
                     xDocument,
-                    "MyStream",
-                    "Flush",
-                    "InterfaceC-MethodC-Summary"
+                    "MyException",
+                    new string[] { "Represents errors that occur during application execution.To browse the .NET Framework source code for this type, see the Reference Source." }
                 );
             }
         }
-        */
 
         static void CheckForClassAComments(XDocument xDocument, string className, string rootSummaryValue = null, string rootRemarksValue = null, string propertySummaryValue = null, string propertyValueValue = null, string methodSummaryValue = null) {
             // Check root tags
@@ -255,9 +252,9 @@ namespace InheritDocTest {
 
         static void CheckForClassSummaryComments(XDocument xDocument, string className, string[] commentValues) {
             var name = $"T:InheritDocTest.{className}";
-            var myMethods = xDocument.Descendants("member").Where(x => x.Attribute("name").Value == name);
-            var summaryTags = myMethods.First().Descendants("summary");
-            Assert.AreEqual(commentValues.Length, summaryTags.Count());
+            var myMethods = xDocument.Descendants("member").Where(x => x.Attribute("name").Value == name).ToArray();
+            var summaryTags = myMethods.First().Descendants("summary").ToArray();
+            Assert.AreEqual(commentValues.Length, summaryTags.Length);
             foreach (var pair in summaryTags.Zip(commentValues, (summaryTag, commentValue) => new { summaryTag, commentValue })) {
                 Assert.AreEqual(pair.commentValue, pair.summaryTag.Value.Trim());
             }
@@ -524,36 +521,7 @@ namespace InheritDocTest {
 
     }
 
-    public class MyStream : Stream {
-        public override bool CanRead => throw new NotImplementedException();
-
-        public override bool CanSeek => throw new NotImplementedException();
-
-        public override bool CanWrite => throw new NotImplementedException();
-
-        public override long Length => throw new NotImplementedException();
-
-        public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        /// <inheritdoc/>
-        public override void Flush() {
-            throw new NotImplementedException();
-        }
-
-        public override int Read(byte[] buffer, int offset, int count) {
-            throw new NotImplementedException();
-        }
-
-        public override long Seek(long offset, SeekOrigin origin) {
-            throw new NotImplementedException();
-        }
-
-        public override void SetLength(long value) {
-            throw new NotImplementedException();
-        }
-
-        public override void Write(byte[] buffer, int offset, int count) {
-            throw new NotImplementedException();
-        }
+    /// <inheritdoc/>
+    public class MyException : Exception {
     }
 }

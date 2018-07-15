@@ -24,6 +24,7 @@ namespace InheritDocLib {
     public static class InheritDocUtil {
         public const string XML_DOC_FILE_NAME_PATTERNS_HELP = "Set to a comma delimited list of XML documentation file names to process (may use wild cards like 'Butterfly.*', leave blank to scan for assemblies in project files, do not include paths). Example: 'Butterfly.Database.xml,Butterfly.Channel.*'";
         public const string EXCLUDE_TYPE_NAME_PATTERNS_HELP = "Set to a comma delimited list of type names to exclude from being the source of replacement XML comments (may use wild cards like 'System.*'). Example: 'System.*,NLog.*'";
+        public const string GLOBAL_SOURCE_XML_FILES_HELP = @"Set to a comma delimited list of xml files to search for source xml comments. Example: 'C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.X\mscorlib.xml";
 
         const string TRIAL_TEXT = "running in free edition (only inheriting comments on types one level deep in type hierarchy from non-interface types), upgrade at https://www.inheritdoc.io/";
 
@@ -32,12 +33,11 @@ namespace InheritDocLib {
         /// </summary>
         /// <param name="basePath">Leave blank to use current directory. Will scan for any project files under base path, determine assemblies from project files, and determine XML documentation files from project assemblies.</param>
         /// <param name="xmlDocFileNamePatterns">Set to a comma delimited list of XML documentation file names to process (may use wild cards like 'Butterfly.*', leave blank to scan for assemblies in project files, do not include paths). Example: 'Butterfly.Database.xml,Butterfly.Channel.*'</param>
-        /// <param name="excludeTypeNamePatterns">Set to a comma delimited list of type names to exclude from being the source of replacement XML comments (may use wild cards like 'System.*'). Example: 'System.*,NLog.*'</param>
         /// <param name="overwriteExisting">Set to false to create new .new.xml files.  Set to true to replace the existing .xml files.</param>
         /// <param name="logger">Set to optional callback to receive log messages.</param>
         /// <returns>List of XML documentation files modified (relative to base path).</returns>
-        public static ICollection<string> Run(string basePath = null, string xmlDocFileNamePatterns = null, string excludeTypeNamePatterns = "System.*", string globalSourceXmlFiles = null, bool overwriteExisting = false, Action<LogLevel, string> logger = null) {
-            if (logger != null) logger(LogLevel.Info, $"InheritDoc(v{Assembly.GetExecutingAssembly().GetName().Version}).Run():basePath={basePath},xmlDocFileNamePatterns={xmlDocFileNamePatterns},excludeTypeNamePatterns={excludeTypeNamePatterns},overwriteExisting ={overwriteExisting}");
+        public static ICollection<string> Run(string basePath = null, string xmlDocFileNamePatterns = null, string globalSourceXmlFiles = null, bool overwriteExisting = false, Action<LogLevel, string> logger = null) {
+            if (logger != null) logger(LogLevel.Info, $"InheritDoc(v{Assembly.GetExecutingAssembly().GetName().Version}).Run():basePath={basePath},xmlDocFileNamePatterns={xmlDocFileNamePatterns},overwriteExisting ={overwriteExisting}");
 
             string newBasePath = string.IsNullOrEmpty(basePath) ? Environment.CurrentDirectory : basePath;
             
@@ -47,7 +47,7 @@ namespace InheritDocLib {
             var globalAssemblyDocuments = LoadGlobalAssemblyDocuments(globalSourceXmlFiles, logger);
 
             var allAssemblyDocuments = assemblyDocuments.Concat(globalAssemblyDocuments).ToArray();
-            var typeDocByName = Compile(allAssemblyDocuments, excludeTypeNamePatterns, logger);
+            var typeDocByName = Compile(allAssemblyDocuments, logger);
             var sortedTypeNames = Sort(typeDocByName);
             var count = ReplaceInheritDocs(assemblyDocuments, typeDocByName, sortedTypeNames, logger);
             if (count == 0) {
@@ -161,7 +161,7 @@ namespace InheritDocLib {
         }
 
         // Compile assemblies into dictionary of types
-        static IDictionary<string, TypeDoc> Compile(ICollection<AssemblyDocument> assemblyDocuments, string excludeTypeNamePatterns, Action<LogLevel, string> logger) {
+        static IDictionary<string, TypeDoc> Compile(ICollection<AssemblyDocument> assemblyDocuments, Action<LogLevel, string> logger) {
             var result = new Dictionary<string, TypeDoc>();
             foreach (var assemblyDocument in assemblyDocuments) {
                 var memberElements = assemblyDocument.xDocument.Descendants("member");
@@ -173,8 +173,7 @@ namespace InheritDocLib {
                     }
 
                     if (!result.TryGetValue(typeData.name, out TypeDoc typeDoc)) {
-                        var excludeTypeNameRegexes = excludeTypeNamePatterns?.Split(',').Select(x => StringX.WildCardToRegex(x.Trim())).ToArray();
-                        var baseTypes = GetBaseTypeDatas(assemblyDocument.typeDataByName, typeData, excludeTypeNameRegexes, logger);
+                        var baseTypes = GetBaseTypeDatas(assemblyDocuments, typeData, logger);
                         typeDoc = new TypeDoc(baseTypes);
                         result[typeData.name] = typeDoc;
                     }
@@ -365,31 +364,34 @@ namespace InheritDocLib {
             return result;
         }
 
-        static ICollection<TypeData> GetBaseTypeDatas(Dictionary<string, TypeData> typeDataByName, TypeData typeData, ICollection<Regex> excludeTypeNameRegexes, Action<LogLevel, string> logger) {
+        static ICollection<TypeData> GetBaseTypeDatas(ICollection<AssemblyDocument> assemblyDocuments, TypeData typeData, Action<LogLevel, string> logger) {
             List<TypeData> result = new List<TypeData>();
             string currentTypeName = typeData.name;
             while (currentTypeName != null) {
-                if (!typeDataByName.TryGetValue(currentTypeName, out TypeData currentTypeData)) break;
+                if (!SearchAllAssemblyDocuments(assemblyDocuments, currentTypeName, out TypeData currentTypeData)) break;
 
-                bool excludeType = excludeTypeNameRegexes == null ? false : excludeTypeNameRegexes.Any(x => x.IsMatch(currentTypeName));
-                if (!excludeType) {
-                    var batch = new List<TypeData>();
-                    foreach (var interfaceTypeName in currentTypeData.interfaceTypeNames) {
-                        if (typeDataByName.TryGetValue(interfaceTypeName, out TypeData interfaceTypeData)) {
-                            bool excludeInterfaceType = excludeTypeNameRegexes == null ? false : excludeTypeNameRegexes.Any(x => x.IsMatch(interfaceTypeName));
-                            if (!excludeInterfaceType) {
-                                batch.Add(interfaceTypeData);
-                            }
-                        }
+                var batch = new List<TypeData>();
+                foreach (var interfaceTypeName in currentTypeData.interfaceTypeNames) {
+                    if (SearchAllAssemblyDocuments(assemblyDocuments, interfaceTypeName, out TypeData interfaceTypeData)) {
+                        batch.Add(interfaceTypeData);
                     }
-                    if (currentTypeData.name != typeData.name) {
-                        batch.Add(currentTypeData);
-                    }
-                    result.InsertRange(0, batch);
                 }
+                if (currentTypeData.name != typeData.name) {
+                    batch.Add(currentTypeData);
+                }
+                result.InsertRange(0, batch);
+
                 currentTypeName = currentTypeData.baseTypeName;
             }
             return result;
+        }
+
+        static bool SearchAllAssemblyDocuments(ICollection<AssemblyDocument> assemblyDocuments, string typeName, out TypeData typeData) {
+            typeData = null;
+            foreach (var assemblyDocument in assemblyDocuments) {
+                if (assemblyDocument.typeDataByName.TryGetValue(typeName, out typeData)) return true;
+            }
+            return false;
         }
 
         static IEnumerable<Type> GetImmediateInterfaces(this Type type) {

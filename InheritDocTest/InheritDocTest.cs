@@ -203,7 +203,7 @@ namespace InheritDocTest {
         public void LibraryTest() {
             var basePath = Path.Combine(Environment.CurrentDirectory, @"..\..");
             var globalSourceXmlFiles = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.X\mscorlib.xml";
-            var newFileNames = InheritDocUtil.Run(basePath: basePath, globalSourceXmlFiles: globalSourceXmlFiles, overwriteExisting: false, excludeTypeNamePatterns: null, logger: Logger);
+            var newFileNames = InheritDocUtil.Run(basePath: basePath, globalSourceXmlFiles: globalSourceXmlFiles, overwriteExisting: false, logger: Logger);
             var fileName = newFileNames.Where(x => Path.GetFileName(x).StartsWith("InheritDocTest.")).First();
             using (var streamReader = new StreamReader(fileName)) {
                 var xDocument = XDocument.Load(streamReader);

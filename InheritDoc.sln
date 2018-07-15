@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		generate-nuget-packages.ps1 = generate-nuget-packages.ps1
 		push-nuget-packages.ps1 = push-nuget-packages.ps1
 		InheritDoc\README.md = InheritDoc\README.md
+		release.txt = release.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InheritDocLib", "InheritDocLib\InheritDocLib.csproj", "{390F170D-8730-4114-A3DA-EDA42541DA86}"

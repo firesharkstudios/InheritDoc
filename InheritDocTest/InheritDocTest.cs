@@ -226,7 +226,7 @@ namespace InheritDocTest {
         }
 
         [TestMethod]
-        public void LibraryTest() {
+        public void LibraryNoExcludeTest() {
             var basePath = Path.Combine(Environment.CurrentDirectory, @"..\..");
             var globalSourceXmlFiles = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.X\mscorlib.xml";
             var newFileNames = InheritDocUtil.Run(basePath: basePath, globalSourceXmlFiles: globalSourceXmlFiles, overwriteExisting: false, logger: Logger);
@@ -243,7 +243,7 @@ namespace InheritDocTest {
 
                 CheckForMethodComments(
                     xDocument,
-                    "MyObject",
+                    "MyException",
                     "#ctor",
                     "summary",
                     "Initializes a new instance of the  class."
@@ -251,10 +251,53 @@ namespace InheritDocTest {
 
                 CheckForMethodComments(
                     xDocument,
-                    "MyObject",
-                    "Equals(System.Object)",
+                    "ClassEA",
+                    "#ctor",
                     "summary",
-                    "Determines whether the specified object is equal to the current object."
+                    "Initializes a new instance of the  class."
+                );
+
+                CheckForMethodComments(
+                    xDocument,
+                    "ClassEB",
+                    "#ctor",
+                    "summary",
+                    "Initializes a new instance of the  class."
+                );
+            }
+        }
+
+        [TestMethod]
+        public void LibraryExcludeTest() {
+            var basePath = Path.Combine(Environment.CurrentDirectory, @"..\..");
+            var globalSourceXmlFiles = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.X\mscorlib.xml";
+            var newFileNames = InheritDocUtil.Run(basePath: basePath, globalSourceXmlFiles: globalSourceXmlFiles, excludeTypes: "System.Object", overwriteExisting: false, logger: Logger);
+            var fileName = newFileNames.Where(x => Path.GetFileName(x).StartsWith("InheritDocTest.")).First();
+            using (var streamReader = new StreamReader(fileName)) {
+                var xDocument = XDocument.Load(streamReader);
+
+                CheckForMethodComments(
+                    xDocument,
+                    "MyException",
+                    "#ctor",
+                    "summary",
+                    "Initializes a new instance of the  class."
+                );
+
+                CheckForMethodComments(
+                    xDocument,
+                    "ClassEA",
+                    "#ctor",
+                    "summary",
+                    null
+                );
+
+                CheckForMethodComments(
+                    xDocument,
+                    "ClassEB",
+                    "#ctor",
+                    "summary",
+                    null
                 );
             }
         }
@@ -288,8 +331,10 @@ namespace InheritDocTest {
             var name = $"M:InheritDocTest.{className}.{methodName}";
             var myMethods = xDocument.Descendants("member").Where(x => x.Attribute("name").Value == name);
             var myTags = myMethods.Count() == 0 ? null : myMethods.First().Descendants(tagName);
-            Assert.AreEqual(string.IsNullOrEmpty(commentValue) ? 0 : 1, myTags.Count());
-            Assert.AreEqual(commentValue, myTags.First().Value.Trim());
+            Assert.AreEqual(string.IsNullOrEmpty(commentValue) ? 0 : 1, myTags==null ? 0 : myTags.Count());
+            if (!string.IsNullOrEmpty(commentValue)) {
+                Assert.AreEqual(commentValue, myTags.First().Value.Trim());
+            }
         }
 
         static void CheckForClassComments(XDocument xDocument, string className, string tagName, string[] commentValues) {
@@ -568,7 +613,10 @@ namespace InheritDocTest {
     }
 
     /// <inheritdoc/>
-    public class MyObject : Object {
+    public class ClassEA {
     }
 
+    /// <inheritdoc/>
+    public class ClassEB : ClassEA {
+    }
 }

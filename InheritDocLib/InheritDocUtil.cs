@@ -23,8 +23,8 @@ namespace InheritDocLib {
     // TODO: Add support for parameterized XML comments
     public static class InheritDocUtil {
         public const string XML_DOC_FILE_NAME_PATTERNS_HELP = "Set to a comma delimited list of XML documentation file names to process (may use wild cards like 'Butterfly.*', leave blank to scan for assemblies in project files, do not include paths). Example: 'Butterfly.Database.xml,Butterfly.Channel.*'";
-        public const string EXCLUDE_TYPE_NAME_PATTERNS_HELP = "Set to a comma delimited list of type names to exclude from being the source of replacement XML comments (may use wild cards like 'System.*'). Example: 'System.*,NLog.*'";
         public const string GLOBAL_SOURCE_XML_FILES_HELP = @"Set to a comma delimited list of xml files to search for source xml comments. Example: 'C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.X\mscorlib.xml";
+        public const string EXCLUDE_TYPES_HELP = "Set to a comma delimited list of types to exclude from comments. Example: 'System.Object'";
 
         const string TRIAL_TEXT = "running in free edition (only inheriting comments on types one level deep in type hierarchy from non-interface types), upgrade at https://www.inheritdoc.io/";
 
@@ -36,7 +36,7 @@ namespace InheritDocLib {
         /// <param name="overwriteExisting">Set to false to create new .new.xml files.  Set to true to replace the existing .xml files.</param>
         /// <param name="logger">Set to optional callback to receive log messages.</param>
         /// <returns>List of XML documentation files modified (relative to base path).</returns>
-        public static ICollection<string> Run(string basePath = null, string xmlDocFileNamePatterns = null, string globalSourceXmlFiles = null, bool overwriteExisting = false, Action<LogLevel, string> logger = null) {
+        public static ICollection<string> Run(string basePath = null, string xmlDocFileNamePatterns = null, string globalSourceXmlFiles = null, string excludeTypes = null, bool overwriteExisting = false, Action<LogLevel, string> logger = null) {
             if (logger != null) logger(LogLevel.Info, $"InheritDoc(v{Assembly.GetExecutingAssembly().GetName().Version}).Run():basePath={basePath},xmlDocFileNamePatterns={xmlDocFileNamePatterns},overwriteExisting ={overwriteExisting}");
 
             string newBasePath = string.IsNullOrEmpty(basePath) ? Environment.CurrentDirectory : basePath;
@@ -47,7 +47,7 @@ namespace InheritDocLib {
             var globalAssemblyDocuments = LoadGlobalAssemblyDocuments(globalSourceXmlFiles, logger);
 
             var allAssemblyDocuments = assemblyDocuments.Concat(globalAssemblyDocuments).ToArray();
-            var typeDocByName = Compile(allAssemblyDocuments, logger);
+            var typeDocByName = Compile(allAssemblyDocuments, excludeTypes, logger);
             var sortedTypeNames = Sort(typeDocByName);
             var count = ReplaceInheritDocs(assemblyDocuments, typeDocByName, sortedTypeNames, logger);
             if (count == 0) {
@@ -161,7 +161,9 @@ namespace InheritDocLib {
         }
 
         // Compile assemblies into dictionary of types
-        static IDictionary<string, TypeDoc> Compile(ICollection<AssemblyDocument> assemblyDocuments, Action<LogLevel, string> logger) {
+        static IDictionary<string, TypeDoc> Compile(ICollection<AssemblyDocument> assemblyDocuments, string excludeTypesText, Action<LogLevel, string> logger) {
+            var excludeTypes = string.IsNullOrWhiteSpace(excludeTypesText) ? null : excludeTypesText.Split(',').Select(x => x.Trim()).Select(x => x.EndsWith(".*") ? x.Replace(".*", "") : x).ToHashSet();
+
             var result = new Dictionary<string, TypeDoc>();
             foreach (var assemblyDocument in assemblyDocuments) {
                 var memberElements = assemblyDocument.xDocument.Descendants("member");
@@ -169,6 +171,10 @@ namespace InheritDocLib {
                     var memberElementName = MemberElementName.Parse(memberElement);
                     if (!assemblyDocument.typeDataByName.TryGetValue(memberElementName.typeName, out TypeData typeData)) {
                         if (logger != null) logger(LogLevel.Warn, $"Could not find type '{memberElementName.typeName}'");
+                        continue;
+                    }
+                    else if (excludeTypes != null && excludeTypes.Contains(memberElementName.typeName)) {
+                        if (logger != null) logger(LogLevel.Info, $"Excluded type '{memberElementName.typeName}'");
                         continue;
                     }
 

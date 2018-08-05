@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Library that post processes XML documentation files to support an &lt;inheritdoc/&gt; tag</summary>
     <description>$description$</description>
-    <releaseNotes>Added support for extending system classes (like System.Exception)</releaseNotes>
+    <releaseNotes>Added option to exclude comments from types (defaults to System.Object)</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>inheritdoclib inherit copy extend xml comments</tags>
   </metadata>

@@ -95,107 +95,133 @@ namespace InheritDocTest {
                 );
 
                 // Test interfaces
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassBA",
                     "MethodA",
+                    "summary",
                     "InterfaceA-MethodA-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassBB",
                     "MethodB",
+                    "summary",
                     "InterfaceB-MethodB-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassBAB",
                     "MethodA",
+                    "summary",
                     "InterfaceA-MethodA-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassBAB",
                     "MethodB",
+                    "summary",
                     "InterfaceB-MethodB-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassBC",
                     "MethodB",
+                    "summary",
                     "InterfaceB-MethodB-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassBC",
                     "MethodC",
+                    "summary",
                     "InterfaceC-MethodC-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassBA",
                     "MethodA",
+                    "summary",
                     "InterfaceA-MethodA-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassBA",
                     "MethodA",
+                    "summary",
                     "InterfaceA-MethodA-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassBA",
                     "MethodA",
+                    "summary",
                     "InterfaceA-MethodA-Summary"
                 );
 
                 // Test cref attribute
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassCB",
                     "MethodA(System.Int32)",
+                    "summary",
                     "ClassCA-MethodA(int)-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassCB",
                     "MethodA(System.String)",
+                    "summary",
                     "ClassCA-MethodA(string)-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassCB",
                     "MethodC",
+                    "summary",
                     "ClassCA-MethodB-Summary"
                 );
-                CheckForMethodSummaryComments(
+                CheckForMethodComments(
                     xDocument,
                     "ClassCB",
                     "MethodD",
+                    "summary",
                     "ClassCA-MethodB-Summary"
                 );
 
-                CheckForClassSummaryComments(
+                CheckForClassComments(
                     xDocument,
                     "ClassDA",
+                    "summary",
                     new string[] { "ClassDA-Summary(1)", "ClassDA-Summary(2)" }
                 );
-                CheckForClassSummaryComments(
+                CheckForClassComments(
                     xDocument,
                     "ClassDB",
+                    "summary",
                     new string[] { "ClassDA-Summary(1)", "ClassDA-Summary(2)" }
                 );
-                CheckForClassSummaryComments(
+                CheckForClassComments(
                     xDocument,
                     "ClassDC",
+                    "summary",
                     new string[] { "ClassDC-Summary" }
                 );
-                CheckForClassSummaryComments(
+                CheckForClassComments(
                     xDocument,
                     "ClassDD",
+                    "summary",
                     new string[] { "ClassDC-Summary" }
                 );
+
+                CheckForMethodComments(
+                    xDocument,
+                    "ClassCB",
+                    "MethodD",
+                    "summary",
+                    "ClassCA-MethodB-Summary"
+                );
+
             }
         }
 
@@ -208,10 +234,27 @@ namespace InheritDocTest {
             using (var streamReader = new StreamReader(fileName)) {
                 var xDocument = XDocument.Load(streamReader);
 
-                CheckForClassSummaryComments(
+                CheckForClassComments(
                     xDocument,
                     "MyException",
+                    "summary",
                     new string[] { "Represents errors that occur during application execution.To browse the .NET Framework source code for this type, see the Reference Source." }
+                );
+
+                CheckForMethodComments(
+                    xDocument,
+                    "MyObject",
+                    "#ctor",
+                    "summary",
+                    "Initializes a new instance of the  class."
+                );
+
+                CheckForMethodComments(
+                    xDocument,
+                    "MyObject",
+                    "Equals(System.Object)",
+                    "summary",
+                    "Determines whether the specified object is equal to the current object."
                 );
             }
         }
@@ -241,21 +284,20 @@ namespace InheritDocTest {
             }
         }
 
-        static void CheckForMethodSummaryComments(XDocument xDocument, string className, string methodName, string commentValue) {
+        static void CheckForMethodComments(XDocument xDocument, string className, string methodName, string tagName, string commentValue) {
             var name = $"M:InheritDocTest.{className}.{methodName}";
             var myMethods = xDocument.Descendants("member").Where(x => x.Attribute("name").Value == name);
-            Assert.AreEqual(string.IsNullOrEmpty(commentValue) ? 0 : 1, myMethods.Count()==0 ? 0 : myMethods.First().Elements().Count());
-            if (myMethods.Count() > 0) {
-                Assert.AreEqual(commentValue, myMethods.First().Descendants("summary").First().Value.Trim());
-            }
+            var myTags = myMethods.Count() == 0 ? null : myMethods.First().Descendants(tagName);
+            Assert.AreEqual(string.IsNullOrEmpty(commentValue) ? 0 : 1, myTags.Count());
+            Assert.AreEqual(commentValue, myTags.First().Value.Trim());
         }
 
-        static void CheckForClassSummaryComments(XDocument xDocument, string className, string[] commentValues) {
+        static void CheckForClassComments(XDocument xDocument, string className, string tagName, string[] commentValues) {
             var name = $"T:InheritDocTest.{className}";
             var myMethods = xDocument.Descendants("member").Where(x => x.Attribute("name").Value == name).ToArray();
-            var summaryTags = myMethods.First().Descendants("summary").ToArray();
-            Assert.AreEqual(commentValues.Length, summaryTags.Length);
-            foreach (var pair in summaryTags.Zip(commentValues, (summaryTag, commentValue) => new { summaryTag, commentValue })) {
+            var myTags = myMethods.Count() == 0 ? null : myMethods.First().Descendants(tagName).ToArray();
+            Assert.AreEqual(commentValues.Length, myTags.Length);
+            foreach (var pair in myTags.Zip(commentValues, (summaryTag, commentValue) => new { summaryTag, commentValue })) {
                 Assert.AreEqual(pair.commentValue, pair.summaryTag.Value.Trim());
             }
         }
@@ -524,4 +566,9 @@ namespace InheritDocTest {
     /// <inheritdoc/>
     public class MyException : Exception {
     }
+
+    /// <inheritdoc/>
+    public class MyObject : Object {
+    }
+
 }

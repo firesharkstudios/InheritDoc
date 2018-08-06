@@ -37,7 +37,7 @@ namespace InheritDocLib {
         /// <param name="logger">Set to optional callback to receive log messages.</param>
         /// <returns>List of XML documentation files modified (relative to base path).</returns>
         public static ICollection<string> Run(string basePath = null, string xmlDocFileNamePatterns = null, string globalSourceXmlFiles = null, string excludeTypes = null, bool overwriteExisting = false, Action<LogLevel, string> logger = null) {
-            if (logger != null) logger(LogLevel.Info, $"InheritDoc(v{Assembly.GetExecutingAssembly().GetName().Version}).Run():basePath={basePath},xmlDocFileNamePatterns={xmlDocFileNamePatterns},overwriteExisting ={overwriteExisting}");
+            if (logger != null) logger(LogLevel.Info, $"InheritDoc(v{Assembly.GetExecutingAssembly().GetName().Version}).Run():basePath={basePath},xmlDocFileNamePatterns={xmlDocFileNamePatterns},globalSourceXmlFiles={globalSourceXmlFiles},excludeTypes={excludeTypes},overwriteExisting ={overwriteExisting}");
 
             string newBasePath = string.IsNullOrEmpty(basePath) ? Environment.CurrentDirectory : basePath;
             

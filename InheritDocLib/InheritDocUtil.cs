@@ -49,7 +49,7 @@ namespace InheritDocLib {
             var allAssemblyDocuments = assemblyDocuments.Concat(globalAssemblyDocuments).ToArray();
             var typeDocByName = Compile(allAssemblyDocuments, excludeTypes, logger);
             var sortedTypeNames = Sort(typeDocByName);
-            var count = ReplaceInheritDocs(assemblyDocuments, typeDocByName, sortedTypeNames, logger);
+            var count = ReplaceInheritDocs(assemblyDocuments, allAssemblyDocuments, typeDocByName, sortedTypeNames, logger);
             if (count == 0) {
                 if (logger != null) logger(LogLevel.Info, $"No <inheritdoc/> tags replaced (if you've used <inhertidoc/> tags, ensure you've enabled XML documentation files in your build settings)");
                 return new string[] { };
@@ -221,7 +221,7 @@ namespace InheritDocLib {
             return result;
         }
 
-        static int ReplaceInheritDocs(ICollection<AssemblyDocument> assemblyDocuments, IDictionary<string, TypeDoc> typeDocByName, ICollection<string> sortedTypeNames, Action<LogLevel, string> logger) {
+        static int ReplaceInheritDocs(ICollection<AssemblyDocument> assemblyDocuments, ICollection<AssemblyDocument> allAssemblyDocuments, IDictionary<string, TypeDoc> typeDocByName, ICollection<string> sortedTypeNames, Action<LogLevel, string> logger) {
             int count = 0;
             foreach (var typeName in sortedTypeNames) {
                 TypeDoc typeDoc = typeDocByName[typeName];
@@ -233,9 +233,9 @@ namespace InheritDocLib {
                     string path = inheritDoc.Parent.GetPath(stop: typeDoc.rootElement);
                     //inheritDoc.RemoveRecurseUp(stop: typeDoc.rootElement);
                     inheritDoc.CleanRemove();
-                    MergeChildElements(assemblyDocuments, typeDocByName, typeName, typeDoc, cref: cref, path: path, logger: logger);
+                    MergeChildElements(assemblyDocuments, allAssemblyDocuments, typeDocByName, typeName, typeDoc, cref: cref, path: path, logger: logger);
                     if (path==null) {
-                        MergeMemberElements(assemblyDocuments, typeDocByName, typeName, typeDoc, cref: cref, logger: logger);
+                        MergeMemberElements(assemblyDocuments, allAssemblyDocuments, typeDocByName, typeName, typeDoc, cref: cref, logger: logger);
                     }
                     count++;
                 }
@@ -249,7 +249,7 @@ namespace InheritDocLib {
                         string path = inheritDoc.Parent.GetPath(stop: memberElement);
                         //inheritDoc.RemoveRecurseUp(stop: memberElement);
                         inheritDoc.CleanRemove();
-                        MergeMemberElements(assemblyDocuments, typeDocByName, typeName, typeDoc, cref: cref, memberElementName: MemberElementName.Parse(memberElement), path: path, logger: logger);
+                        MergeMemberElements(assemblyDocuments, allAssemblyDocuments, typeDocByName, typeName, typeDoc, cref: cref, memberElementName: MemberElementName.Parse(memberElement), path: path, logger: logger);
                         count++;
                     }
                 }
@@ -257,11 +257,11 @@ namespace InheritDocLib {
             return count;
         }
 
-        static void MergeChildElements(ICollection<AssemblyDocument> assemblyDocuments, IDictionary<string, TypeDoc> typeDocByName, string typeName, TypeDoc typeDoc, string cref = null, string path = null, Action<LogLevel, string> logger = null) {
+        static void MergeChildElements(ICollection<AssemblyDocument> assemblyDocuments, ICollection<AssemblyDocument> allAssemblyDocuments, IDictionary<string, TypeDoc> typeDocByName, string typeName, TypeDoc typeDoc, string cref = null, string path = null, Action<LogLevel, string> logger = null) {
             if (logger!=null) logger(LogLevel.Trace, $"MergeChildElements():typeName={typeName}");
 
             var crefMemberElementName = string.IsNullOrEmpty(cref) ? null : MemberElementName.Parse(cref);
-            var baseTypeDatas = OverrideBaseTypeDatas(assemblyDocuments, typeDoc, crefMemberElementName, logger);
+            var baseTypeDatas = OverrideBaseTypeDatas(allAssemblyDocuments, typeDoc, crefMemberElementName, logger);
             var pathParts = path?.Split('/');
 
             foreach (var baseTypeData in baseTypeDatas.Reverse()) {
@@ -276,11 +276,11 @@ namespace InheritDocLib {
             }
         }
 
-        static void MergeMemberElements(ICollection<AssemblyDocument> assemblyDocuments, IDictionary<string, TypeDoc> typeDocByName, string typeName, TypeDoc typeDoc, string cref = null, MemberElementName memberElementName = null, string path = null, Action<LogLevel, string> logger = null) {
+        static void MergeMemberElements(ICollection<AssemblyDocument> assemblyDocuments, ICollection<AssemblyDocument> allAssemblyDocuments, IDictionary<string, TypeDoc> typeDocByName, string typeName, TypeDoc typeDoc, string cref = null, MemberElementName memberElementName = null, string path = null, Action<LogLevel, string> logger = null) {
             if (logger!=null) logger(LogLevel.Trace, $"MergeMemberElements():typeName={typeName}");
 
             var crefMemberElementName = string.IsNullOrEmpty(cref) ? null : MemberElementName.Parse(cref);
-            var baseTypeDatas = OverrideBaseTypeDatas(assemblyDocuments, typeDoc, crefMemberElementName, logger);
+            var baseTypeDatas = OverrideBaseTypeDatas(allAssemblyDocuments, typeDoc, crefMemberElementName, logger);
             var pathParts = path?.Split('/');
 
             foreach (var baseTypeData in baseTypeDatas.Reverse()) {
@@ -322,10 +322,10 @@ namespace InheritDocLib {
             }
         }
 
-        static ICollection<TypeData> OverrideBaseTypeDatas(ICollection<AssemblyDocument> assemblyDocuments, TypeDoc typeDoc, MemberElementName crefMemberElementName, Action<LogLevel, string> logger) {
+        static ICollection<TypeData> OverrideBaseTypeDatas(ICollection<AssemblyDocument> allAssemblyDocuments, TypeDoc typeDoc, MemberElementName crefMemberElementName, Action<LogLevel, string> logger) {
             ICollection<TypeData> baseTypes = null;
             if (crefMemberElementName!=null) {
-                foreach (var assemblyDocument in assemblyDocuments) {
+                foreach (var assemblyDocument in allAssemblyDocuments) {
                     if (assemblyDocument.typeDataByName.TryGetValue(crefMemberElementName.typeName, out TypeData crefTypeData)) {
                         baseTypes = new TypeData[] { crefTypeData };
                         break;

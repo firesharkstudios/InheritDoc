@@ -1,28 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;net45</TargetFrameworks>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).xml</DocumentationFile>
-    <ApplicationIcon />
-    <OutputType>Exe</OutputType>
-    <StartupObject />
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp2.1;net45</TargetFrameworks>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).xml</DocumentationFile>
+        <ApplicationIcon />
+        <OutputType>Exe</OutputType>
+        <StartupObject />
+        <PackAsTool Condition="'$(TargetFramework)' == 'netcoreapp2.1'">true</PackAsTool>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.3.0" />
-    <PackageReference Include="NLog" Version="4.5.8" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CommandLineParser" Version="2.3.0" />
+        <PackageReference Include="NLog" Version="4.5.8" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\InheritDocLib\InheritDocLib.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\InheritDocLib\InheritDocLib.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Properties\" />
+    </ItemGroup>
 
 </Project>

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -139,8 +138,9 @@ namespace InheritDocLib {
             List<AssemblyDocument> assemblyDocuments = new List<AssemblyDocument>();
             foreach (var xmlFile in globalSourceXmlFiles.Split(',')) {
                 var document = ReadXDocument(xmlFile, logger);
-                string assemblyName = document.Root.Element("assembly").Element("name").Value;
-                var assemblyDefinition = assemblyResolver.Resolve(assemblyName);
+                var assemblyName = document.Root.Element("assembly").Element("name").Value;
+                var assemblyNameRef = new AssemblyNameReference(assemblyName, null);
+                var assemblyDefinition = assemblyResolver.Resolve(assemblyNameRef);
                 var assemblyDocument = new AssemblyDocument(assemblyDefinition, document);
                 assemblyDocuments.Add(assemblyDocument);
             }
@@ -426,12 +426,10 @@ namespace InheritDocLib {
         }
 
         static Dictionary<string, TypeData> GetTypeByName(AssemblyDefinition assemblyDefinition) {
-            var typeDatas = assemblyDefinition.MainModule.Types.Select(x => {
-                return new TypeData {
-                    name = x.FullName,
-                    interfaceTypeNames = x.Interfaces == null ? new string[] { } : x.Interfaces.Select(y => y.FullName).ToArray(),
-                    baseTypeName = x.BaseType?.FullName
-                };
+            var typeDatas = assemblyDefinition.MainModule.Types.Select(x => new TypeData {
+                name = x.FullName,
+                interfaceTypeNames = x.Interfaces == null ? new string[] { } : x.Interfaces.Select(y => y.InterfaceType.FullName).ToArray(),
+                baseTypeName = x.BaseType?.FullName
             });
             return typeDatas.ToDictionary(x => x.name);
         }

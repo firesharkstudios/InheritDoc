@@ -12,8 +12,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Command line tool that post processes XML documentation files to support an &lt;inheritdoc/&gt; tag</summary>
     <description>$description$</description>
-    <releaseNotes>Fixed issue not finding base types in cref attributes searching global source xml files</releaseNotes>
-    <copyright>Copyright 2017</copyright>
+    <releaseNotes>Upgraded to latest version of Mono.Cecil</releaseNotes>
+    <copyright>Copyright 2017-2018</copyright>
     <tags>inheritdoc inherit copy extend xml comments</tags>
   </metadata>
   <files>

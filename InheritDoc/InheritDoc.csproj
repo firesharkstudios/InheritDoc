@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp2.1;net45</TargetFrameworks>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).xml</DocumentationFile>
         <ApplicationIcon />
         <OutputType>Exe</OutputType>
         <StartupObject />
-        <PackAsTool Condition="'$(TargetFramework)' == 'netcoreapp2.1'">true</PackAsTool>
+        <PackAsTool>true</PackAsTool>
         <Version>1.2.3.0</Version>
         <Description>Command line tool that post processes XML documentation files to support an &amp;lt;inheritdoc/&amp;gt; tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDocLib NuGet package for a programmatic interface.</Description>
         <Company>Fireshark Studios, LLC</Company>

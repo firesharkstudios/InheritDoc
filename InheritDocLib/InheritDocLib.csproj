@@ -6,6 +6,16 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
+    <Version>1.2.3.0</Version>
+    <Description>Library that post processes XML documentation files to support an &amp;lt;inheritdoc/&amp;gt; tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDoc NuGet package for a command line interface.</Description>
+    <Company>Fireshark Studios, LLC</Company>
+    <Copyright>Copyright ©  2017</Copyright>
+    <Product>InheritDoc</Product>
+    <Authors>Fireshark Studios, LLC</Authors>
+    <PackageLicenseUrl>https://www.inheritdoc.io/license/</PackageLicenseUrl>
+    <PackageProjectUrl>https://www.inheritdoc.io/</PackageProjectUrl>
+    <PackageTags>inherit, copy, xml, inheritdoclib, extend, comments</PackageTags>
+    <PackageIconUrl>https://www.inheritdoc.io/img/logo_256x256.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

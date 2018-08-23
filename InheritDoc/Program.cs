@@ -1,4 +1,20 @@
-﻿using System;
+﻿/*
+ * Copyright 2017 Fireshark Studios, LLC
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+using System;
 
 using CommandLine;
 using NLog;
@@ -12,11 +28,20 @@ namespace InheritDoc {
 
         static void Main(string[] args) {
             // Parse options
-            var options = new Options();
-            var isValid = CommandLine.Parser.Default.ParseArgumentsStrict(args, options);
-            if (!isValid) throw new Exception("Invalid command line");
+            var parserResult = CommandLine.Parser.Default.ParseArguments<Options>(args);
+            parserResult.WithNotParsed(errors =>
+            {
+                foreach (var error in errors)
+                {
+                    if (!error.StopsProcessing)
+                        Console.WriteLine($"Invalid command line: {error.Tag}");
+                }
+            });
 
-            InheritDocUtil.Run(options.BasePath, options.XmlDocFileNamePatterns, options.GlobalSourceXmlFiles, options.ExcludeTypes, overwriteExisting: options.OverwriteExisting, logger: Logger);
+            parserResult.WithParsed(options =>
+            {
+                InheritDocUtil.Run(options.BasePath, options.XmlDocFileNamePatterns, options.GlobalSourceXmlFiles, options.ExcludeTypes, overwriteExisting: options.OverwriteExisting, logger: Logger);
+            });
         }
 
         static void Logger(InheritDocLib.LogLevel logLevel, string message) {
@@ -47,10 +72,10 @@ namespace InheritDoc {
         [Option('f', "xml-doc-file-name-patterns", Required = false, HelpText = InheritDocUtil.XML_DOC_FILE_NAME_PATTERNS_HELP)]
         public string XmlDocFileNamePatterns { get; set; }
 
-        [Option('g', "global-source-xml-files", Required = false, DefaultValue = null, HelpText = InheritDocUtil.GLOBAL_SOURCE_XML_FILES_HELP)]
+        [Option('g', "global-source-xml-files", Required = false, Default = null, HelpText = InheritDocUtil.GLOBAL_SOURCE_XML_FILES_HELP)]
         public string GlobalSourceXmlFiles { get; set; }
 
-        [Option('x', "exclude-types", Required = false, DefaultValue = "System.Object", HelpText = InheritDocUtil.EXCLUDE_TYPES_HELP)]
+        [Option('x', "exclude-types", Required = false, Default = "System.Object", HelpText = InheritDocUtil.EXCLUDE_TYPES_HELP)]
         public string ExcludeTypes { get; set; }
 
         [Option('o', "overwrite", HelpText = "Include to overwrite existing xml files. Omit to create new files with '.new.xml' suffix.")]

@@ -1,12 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
-        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).xml</DocumentationFile>
-        <ApplicationIcon />
-        <OutputType>Exe</OutputType>
-        <StartupObject />
-        <PackAsTool>true</PackAsTool>
         <Version>1.2.3.0</Version>
         <Description>Command line tool that post processes XML documentation files to support an &amp;lt;inheritdoc/&amp;gt; tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDocLib NuGet package for a programmatic interface.</Description>
         <Company>Fireshark Studios, LLC</Company>
@@ -16,11 +10,33 @@
         <PackageProjectUrl>https://www.inheritdoc.io/</PackageProjectUrl>
         <PackageTags>copy, inheritdoc, inherit, xml, extend, comments</PackageTags>
         <PackageIconUrl>https://www.inheritdoc.io/img/logo_256x256.png</PackageIconUrl>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).xml</DocumentationFile>
+        <ApplicationIcon />
+        <OutputType>Exe</OutputType>
+        <StartupObject />
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(GlobalTool)' != true">
+        <TargetFramework>net45</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(GlobalTool)' == true">
+        <PackageId>InheritDoc-Tool</PackageId>
+        <Description>.NET Core global tool that post processes XML documentation files to support an &amp;lt;inheritdoc/&amp;gt; tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDocLib NuGet package for a programmatic interface.</Description>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <PackAsTool>true</PackAsTool>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'Release' and '$(GlobalTool)' != true">
+        <Content Include="bin\$(Configuration)\$(TargetFramework)\*">
+            <Pack>true</Pack>
+            <PackagePath>tools</PackagePath>
+        </Content>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.3.0" />

@@ -14,6 +14,7 @@
         <ApplicationIcon />
         <OutputType>Exe</OutputType>
         <StartupObject />
+        <PackageReleaseNotes>Converted InheritDocLib to support both .NET Core and .NET Framework</PackageReleaseNotes>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GlobalTool)' != true">
@@ -21,7 +22,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GlobalTool)' == true">
-        <PackageId>InheritDoc-Tool</PackageId>
+        <PackageId>InheritDocTool</PackageId>
         <Description>.NET Core global tool that post processes XML documentation files to support an &amp;lt;inheritdoc/&amp;gt; tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDocLib NuGet package for a programmatic interface.</Description>
         <TargetFramework>netcoreapp2.1</TargetFramework>
         <PackAsTool>true</PackAsTool>

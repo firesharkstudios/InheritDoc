@@ -16,6 +16,7 @@
     <PackageProjectUrl>https://www.inheritdoc.io/</PackageProjectUrl>
     <PackageTags>inherit, copy, xml, inheritdoclib, extend, comments</PackageTags>
     <PackageIconUrl>https://www.inheritdoc.io/img/logo_256x256.png</PackageIconUrl>
+    <PackageReleaseNotes>Converted InheritDocLib to support both .NET Core and .NET Framework</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

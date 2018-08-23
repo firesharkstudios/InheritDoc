@@ -7,7 +7,7 @@
     </Description>
         <MoreInfo>http://www.inheritdoc.com/</MoreInfo>
         <GettingStartedGuide>index.html</GettingStartedGuide>
-        <ReleaseNotes>Upgraded to latest version of Mono.Cecil</ReleaseNotes>
+        <ReleaseNotes>Converted InheritDocLib to support both .NET Core and .NET Framework</ReleaseNotes>
         <Tags>inheritdoc inherit copy extend xml comments</Tags>
     </Metadata>
     <Installation>

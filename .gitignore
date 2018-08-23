@@ -260,7 +260,9 @@ paket-files/
 __pycache__/
 *.pyc
 /logo
-/www.inheritdoc.io
 push-nuget-packages.ps1
 /release.txt
 /InheritDocVsix/Key.snk
+/www.inheritdoc.io/ssl
+/www.inheritdoc.io/google803774a6e9ff6295.html
+/www.inheritdoc.io/sync.bat

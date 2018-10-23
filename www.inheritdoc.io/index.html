@@ -64,7 +64,7 @@
             <p class="lead">Inherit XML comments in your C# source code.</p>
         </div>
         <section style="text-align: center">
-            <span style="padding: 0.5rem; background-color: lightcyan">Build a real-time web app using C# on the server and Vue.js on the client -- checkout <a href="https://github.com/firesharkstudios/butterfly-server-dotnet">Butterfly Server .NET</a> on GitHub</span>
+            <span style="padding: 0.5rem; background-color: lightcyan">Build a real-time web app using C# on the server and Vue.js on the client -- checkout <a href="https://butterflyserver.io">Butterfly Server .NET</a> on GitHub</span>
         </section>
         <section>
             <h3>Overview</h3>
@@ -368,9 +368,9 @@ public class MyCoolDatabase : IDatabase {
                 </li>
                 <li>
                     Run <strong>InheritDoc</strong> by entering this in the <em>Package Manager Console</em>...
-                    <pre><code>.\packages\InheritDoc.2.0.0\tools\InheritDoc</code></pre>
+                    <pre><code>.\packages\InheritDoc.2.0.1\tools\InheritDoc</code></pre>
                     <p>-or-</p>
-                    <pre><code>\Users\<span class="text-danger">&lt;your user name&gt;</span>\.nuget\packages\inheritdoc\2.0.0\tools\InheritDoc.exe</code></pre>
+                    <pre><code>\Users\<span class="text-danger">&lt;your user name&gt;</span>\.nuget\packages\inheritdoc\2.0.1\tools\InheritDoc.exe</code></pre>
                     <p>The path depends on the type of project (.NET Framework vs .NET Standard/Core).
                 </li>
             </ol>
@@ -507,13 +507,14 @@ public class MyCoolDatabase : IDatabase {
             <hr />
 
             <blockquote class="blockquote">
-                I'm using a -g switch to extend the documentation on a System class, how can I exlude the XML comments for System.Object?
+                I'm using a -g switch to extend the documentation on a System class, how can I exclude the XML comments for System.Object?
             </blockquote>
-            <p>Use the -x switch with a comma delimited list of classes to exclude inheriting from (like -xSystem.Object)</p>
+            <p>Use the -x switch with a comma delimited list of classes to exclude from inheriting from (like -xSystem.Object)</p>
         </section>
         <section>
             <h3>Release Notes</h3>
             <ul>
+                <li>v2.0.1 (10/23/2018) - Changed InheritDocLib to shared project to avoid loading issues for VSIX</li>
                 <li>v2.0.0 (8/23/2018) - Converted InheritDocLib to also target .NET Core (thanks <a href="https://github.com/johan-v-r">johan-v-r</a>)</li>
                 <li>v1.2.3 (8/21/2018) - Upgraded to latest version of Mono.Cecil</li>
                 <li>v1.2.2.1 (8/12/2018) - Fixed issue not finding base types in cref attributes searching global source xml files</li>
@@ -536,7 +537,7 @@ public class MyCoolDatabase : IDatabase {
             <p>Contact me at <a href="mailto:kent@fireshark.com">kent@fireshark.com</a> if you have any questions, concerns, or ideas.</p>
         </section>
         <section style="text-align: center">
-            <span style="padding: 0.5rem; background-color: lightcyan">Build a real-time web app using C# on the server and Vue.js on the client -- checkout <a href="https://github.com/firesharkstudios/butterfly-server-dotnet">Butterfly Server .NET</a> on GitHub</span>
+            <span style="padding: 0.5rem; background-color: lightcyan">Build a real-time web app using C# on the server and Vue.js on the client -- checkout <a href="https://butterflyserver.io">Butterfly Server .NET</a> on GitHub</span>
         </section>
         <hr />
         <p class="text-center">Copyright 2017-2018, Fireshark Studios, LLC</p>
@@ -571,17 +572,6 @@ public class MyCoolDatabase : IDatabase {
                 });
             }
         });
-
-        /*
-        document.getElementById('pay-now-button').addEventListener('click', function (e) {
-            handler.open({
-                name: 'Fireshark Studios, LLC',
-                description: 'Inherit Doc Pro Edition',
-                amount: 2900
-            });
-            e.preventDefault();
-        });
-        */
 
         window.addEventListener('popstate', function () {
             handler.close();

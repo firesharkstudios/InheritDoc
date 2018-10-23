@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>49bbb881-a047-4a28-9586-d5fffa083806</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>InheritDocLib</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DictionaryX.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileX.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IEnumerableX.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InheritDocUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringX.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XElementX.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md" />
+  </ItemGroup>
+</Project>

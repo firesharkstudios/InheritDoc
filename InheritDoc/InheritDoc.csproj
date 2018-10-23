@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>2.0.0.0</Version>
+        <Version>2.0.1</Version>
         <Description>Command line tool that post processes XML documentation files to support an <inheritdoc /> tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDocLib NuGet package for a programmatic interface.</Description>
         <Company>Fireshark Studios, LLC</Company>
         <Copyright>Copyright ©  2017-2018</Copyright>
@@ -14,7 +14,7 @@
         <ApplicationIcon />
         <OutputType>Exe</OutputType>
         <StartupObject />
-        <PackageReleaseNotes>Converted InheritDocLib to support both .NET Core and .NET Framework</PackageReleaseNotes>
+        <PackageReleaseNotes>Changed InheritDocLib to shared project to avoid loading issues for VSIX</PackageReleaseNotes>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GlobalTool)' != true">
@@ -41,11 +41,8 @@
 
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.3.0" />
-        <PackageReference Include="NLog" Version="4.5.8" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\InheritDocLib\InheritDocLib.csproj" />
+        <PackageReference Include="Mono.Cecil" Version="0.10.1" />
+        <PackageReference Include="NLog" Version="4.5.10" />
     </ItemGroup>
 
     <ItemGroup>
@@ -57,5 +54,7 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+
+    <Import Project="..\InheritDocLib\InheritDocLib.projitems" Label="Shared" />
 
 </Project>

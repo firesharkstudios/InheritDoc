@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -14,9 +12,9 @@ using EnvDTE80;
 
 using InheritDocLib;
 using Microsoft.VisualStudio;
+using System.ComponentModel.Design;
 
 namespace InheritDocVsix {
-
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
     /// </summary>
@@ -34,15 +32,14 @@ namespace InheritDocVsix {
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
-    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
+    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(InheritDocPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideOptionPage(typeof(OptionPageGrid), "InheritDoc", "General", 0, 0, true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    public sealed class InheritDocPackage : AsyncPackage
-    {
+    public sealed class InheritDocPackage : Package {
         /// <summary>
         /// InheritDocPackage GUID string.
         /// </summary>
@@ -65,7 +62,6 @@ namespace InheritDocVsix {
                     Run(page);
                 }
             });
-
         }
 
         #region Package Members
@@ -74,11 +70,12 @@ namespace InheritDocVsix {
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress) {
-            await base.InitializeAsync(cancellationToken, progress);
+        protected override void Initialize() {
+            base.Initialize();
 
             this.buildEventProxy.Initialize();
             RunInheritDoc.Initialize(this);
+
         }
 
         public static void Run(OptionPageGrid page) {

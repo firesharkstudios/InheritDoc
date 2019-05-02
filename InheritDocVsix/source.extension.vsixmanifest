@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="InheritDocVsix.75c8936d-7a76-4cc0-baed-4ecabc3b9e10" Version="2.1.1" Language="en-US" Publisher="Fireshark Studios, LLC" />
+        <Identity Id="InheritDocVsix.75c8936d-7a76-4cc0-baed-4ecabc3b9e10" Version="2.1.0" Language="en-US" Publisher="Fireshark Studios, LLC" />
         <DisplayName>InheritDoc</DisplayName>
         <Description xml:space="preserve">Allows using &lt;inheritdoc/&gt; tags in XML comments that copy and extend the XML comments from base types and interfaces
     </Description>

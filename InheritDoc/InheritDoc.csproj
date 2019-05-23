@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>2.2.0</Version>
+        <Version>2.2.1</Version>
         <Description>Command line tool that post processes XML documentation files to support an <inheritdoc /> tag allowing inheriting XML comments from base types, interfaces, and similar methods. Works with .NET Framework, .NET Standard, and .NET Core projects. See the separate InheritDocLib NuGet package for a programmatic interface.</Description>
         <Company>Fireshark Studios, LLC</Company>
         <Copyright>Copyright ©  2017-2018</Copyright>
@@ -16,7 +16,7 @@
         <ApplicationIcon />
         <OutputType>Exe</OutputType>
         <StartupObject />
-        <PackageReleaseNotes>Rolled back support for VS 2019</PackageReleaseNotes>
+        <PackageReleaseNotes>Fix for published projects targeting .NET Core win-* runtime</PackageReleaseNotes>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GlobalTool)' != true">

@@ -88,6 +88,17 @@ namespace InheritDocLib {
                 else if (matchingAssemblyFiles.Count() == 1) {
                     assemblyFiles.Add(matchingAssemblyFiles.First());
                 }
+                else if (matchingAssemblyFiles.Count() == 2 &&
+                         matchingAssemblyFiles.Any(f => f.EndsWith(".exe")) &&
+                         matchingAssemblyFiles.Any(f => f.EndsWith(".dll")))
+                {
+                    //.NET Core win-* publishing target creates 2 assemblies with the same name but different extensions:
+                    // MyAssembly.dll (contains actual code)
+                    // MyAssembly.exe (actually just a stub)
+                    // In this situation we take the .dll version
+
+                    assemblyFiles.Add(matchingAssemblyFiles.First(f => f.EndsWith(".dll")));
+                }
                 else if (matchingAssemblyFiles.Count() > 1) {
                     if (logger!=null) logger(LogLevel.Warn, $"GetAssemblyFiles():Found too many assemblies for xml file {xmlFile} ({string.Join(",", matchingAssemblyFiles)})");
                 }

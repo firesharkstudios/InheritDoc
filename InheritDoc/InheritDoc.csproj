@@ -10,6 +10,8 @@
         <PackageProjectUrl>https://www.inheritdoc.io/</PackageProjectUrl>
         <PackageTags>copy, inheritdoc, inherit, xml, extend, comments</PackageTags>
         <PackageIconUrl>https://www.inheritdoc.io/img/logo_256x256.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/firesharkstudios/InheritDoc</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildProjectName).xml</DocumentationFile>
         <ApplicationIcon />
         <OutputType>Exe</OutputType>

@@ -1,115 +1,126 @@
 ﻿<!doctype html>
 <html lang="en">
 <head>
-    <title>InheritDoc - Inherit XML comments in your C# source code</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Allows adding &lt;inheritdoc/&gt; tags to XML comments in C# source code to inherit XML comments. Available as command line tool and Visual Studio extension."/>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-61529831-6"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'UA-61529831-6');
-    </script>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
-    <style>
-        ul li, ol li {
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-        }
-        ol li pre {
-            margin-top: 1em;
-            margin-bottom: 1em;
-        }
-        .padding-lr {
-            padding-left: 1em;
-            padding-right: 1em;
-        }
-        .padding-t {
-            padding-top: 1em;
-        }
-        .padding-b {
-            padding-bottom: 1em;
-        }
-        .code-sample {
-            height: 20em;
-            overflow-y: auto;
-        }
-        section {
-            margin-bottom: 2.5em;
-        }
-        .table tr td, .table tr th {
-            text-align: center;
-        }
-        .table tr td:first-child {
-            text-align: left;
-        }
-        h3 {
-            margin-bottom: 1em;
-        }
-        h4 {
-            margin-bottom: 0.8em;
-        }
-        .tip {
-            padding-left: 2.5rem;
-        }
-    </style>
+  <title>InheritDoc - Inherit XML comments in your C# source code</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Allows adding &lt;inheritdoc/&gt; tags to XML comments in C# source code to inherit XML comments. Available as command line tool and Visual Studio extension." />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-61529831-6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-61529831-6');
+  </script>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+  <style>
+    ul li, ol li {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+    }
+
+      ol li pre {
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+
+    .padding-lr {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+
+    .padding-t {
+      padding-top: 1em;
+    }
+
+    .padding-b {
+      padding-bottom: 1em;
+    }
+
+    .code-sample {
+      height: 20em;
+      overflow-y: auto;
+    }
+
+    section {
+      margin-bottom: 2.5em;
+    }
+
+    .table tr td, .table tr th {
+      text-align: center;
+    }
+
+      .table tr td:first-child {
+        text-align: left;
+      }
+
+    h3 {
+      margin-bottom: 1em;
+    }
+
+    h4 {
+      margin-bottom: 0.8em;
+    }
+
+    .tip {
+      padding-left: 2.5rem;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="jumbotron">
-            <h1 class="display-3">InheritDoc</h1>
-            <p class="lead">Inherit XML comments in your C# source code.</p>
-        </div>
-        <section style="text-align: center">
-            <span style="padding: 0.5rem; background-color: lightcyan">Build a real-time web app using C# on the server and Vue.js on the client -- checkout <a href="https://butterflyserver.io">Butterfly Server .NET</a> on GitHub</span>
-        </section>
-        <section>
-            <h3>Overview</h3>
-            <p><b>InheritDoc</b> allows adding <mark>&lt;inheritdoc/&gt;</mark> tags to XML comments in C# source code to inherit XML comments from base classes, interfaces, and similar methods. This <b>eliminates</b> unwanted copying and pasting of duplicate XML comments and <b>automatically</b> keeps XML comments sychronized.</p>
-            <p>XML comments (starting with <mark>///</mark>) are compiled into XML documentation files for each assembly by the normal build process. <b>InheritDoc</b> post processes these XML documentation files to inherit XML comments as needed. This approach makes the XML comments <b>compatible</b> with other documentation tools, <b>accessible</b> by Intellisense in compiled packages, and <b>packagable</b> into a Nuget package if distributing a library.</p>
-        </section>
-        <section>
-            <h3>Key Usage Scenarios</h3>
-            <ul>
-                <li>Add your XML comments in base classes and let <b>InheritDoc</b> copy the comments to implementing classes</li>
-                <li>Add your XML comments in interfaces and let <b>InheritDoc</b> copy the comments to implementing classes</li>
-                <li>Add your XML comments to your synchronous methods and let <b>InheritDoc</b> copy the comments to your asynchronous versions of the same methods</li>
-            </ul>
-        </section>
-        <section>
-            <h3>Examples</h3>
-            <p>Here are a few examples of your XML comments with and without <b>InheritDoc</b>...</p>
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="base-class-example-1-tab" data-toggle="tab" href="#base-class-example-1" role="tab" aria-controls="base-class-example-1" aria-selected="true">
-                        Base Class Example #1
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="base-class-example-2-tab" data-toggle="tab" href="#base-class-example-2" role="tab" aria-controls="base-class-example-2" aria-selected="true">
-                        Base Class Example #2
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="interface-example-tab" data-toggle="tab" href="#interface-example" role="tab" aria-controls="interface-example" aria-selected="false">
-                        Interface Example
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="similar-method-example-tab" data-toggle="tab" href="#similar-method-example" role="tab" aria-controls="similar-method-example" aria-selected="false">
-                        Similar Method Example
-                    </a>
-                </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-                <!-- Base Class Example #1 Tab -->
-                <div class="tab-pane fade show active" id="base-class-example-1" role="tabpanel" aria-labelledby="base-class-example-1-tab">
-                    <div class="row padding-t">
-                        <div class="col">
-                            <h5>Your C# Code</h5>
+  <div class="container">
+    <div class="jumbotron">
+      <h1 class="display-3">InheritDoc</h1>
+      <p class="lead">Inherit XML comments in your C# source code.</p>
+    </div>
+    <section style="text-align: center">
+      <span style="padding: 0.5rem; background-color: lightcyan">Build a real-time web app using C# on the server and Vue.js on the client -- checkout <a href="https://butterflyserver.io">Butterfly Server .NET</a> on GitHub</span>
+    </section>
+    <section>
+      <h3>Overview</h3>
+      <p><b>InheritDoc</b> allows adding <mark>&lt;inheritdoc/&gt;</mark> tags to XML comments in C# source code to inherit XML comments from base classes, interfaces, and similar methods. This <b>eliminates</b> unwanted copying and pasting of duplicate XML comments and <b>automatically</b> keeps XML comments sychronized.</p>
+      <p>XML comments (starting with <mark>///</mark>) are compiled into XML documentation files for each assembly by the normal build process. <b>InheritDoc</b> post processes these XML documentation files to inherit XML comments as needed. This approach makes the XML comments <b>compatible</b> with other documentation tools, <b>accessible</b> by Intellisense in compiled packages, and <b>packagable</b> into a Nuget package if distributing a library.</p>
+    </section>
+    <section>
+      <h3>Key Usage Scenarios</h3>
+      <ul>
+        <li>Add your XML comments in base classes and let <b>InheritDoc</b> copy the comments to implementing classes</li>
+        <li>Add your XML comments in interfaces and let <b>InheritDoc</b> copy the comments to implementing classes</li>
+        <li>Add your XML comments to your synchronous methods and let <b>InheritDoc</b> copy the comments to your asynchronous versions of the same methods</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Examples</h3>
+      <p>Here are a few examples of your XML comments with and without <b>InheritDoc</b>...</p>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="base-class-example-1-tab" data-toggle="tab" href="#base-class-example-1" role="tab" aria-controls="base-class-example-1" aria-selected="true">
+            Base Class Example #1
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="base-class-example-2-tab" data-toggle="tab" href="#base-class-example-2" role="tab" aria-controls="base-class-example-2" aria-selected="true">
+            Base Class Example #2
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="interface-example-tab" data-toggle="tab" href="#interface-example" role="tab" aria-controls="interface-example" aria-selected="false">
+            Interface Example
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="similar-method-example-tab" data-toggle="tab" href="#similar-method-example" role="tab" aria-controls="similar-method-example" aria-selected="false">
+            Similar Method Example
+          </a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <!-- Base Class Example #1 Tab -->
+        <div class="tab-pane fade show active" id="base-class-example-1" role="tabpanel" aria-labelledby="base-class-example-1-tab">
+          <div class="row padding-t">
+            <div class="col">
+              <h5>Your C# Code</h5>
 <pre><code class="csharp">public abstract class MyDatabase {
     /// &lt;summary&gt;
     /// A long detailed description about this method
@@ -122,11 +133,11 @@ public class MyCoolDatabase : MyDatabase {
     public override void DoSomething();
 }
 </code></pre>
-                        </div>
-                    </div>
-                    <div class="row padding-t">
-                        <div class="col">
-                            <h5>XML documentation file without InheritDoc</h5>
+            </div>
+          </div>
+          <div class="row padding-t">
+            <div class="col">
+              <h5>XML documentation file without InheritDoc</h5>
 <pre><code class="xml code-sample">&lt;members&gt;
     &lt;member name=&quot;M:MyDatabase.DoSomething&quot;&gt;
         &lt;summary&gt;
@@ -136,9 +147,9 @@ public class MyCoolDatabase : MyDatabase {
     &lt;-- Nothing generated for MyCoolDatabase.DoSomething() --&gt;
 &lt;/members&gt;
 </code></pre>
-                        </div>
-                        <div class="col">
-                            <h5>XML documentation file with InheritDoc</h5>
+            </div>
+            <div class="col">
+              <h5>XML documentation file with InheritDoc</h5>
 <pre><code class="xml code-sample">&lt;members&gt;
     &lt;member name=&quot;M:MyDatabase.DoSomething&quot;&gt;
         &lt;summary&gt;
@@ -152,15 +163,15 @@ public class MyCoolDatabase : MyDatabase {
     &lt;/member&gt;
 &lt;/members&gt;
 </code></pre>
-                        </div>
-                    </div>
-                </div>
+            </div>
+          </div>
+        </div>
 
-                <!-- Base Class Example #2 Tab -->
-                <div class="tab-pane fade" id="base-class-example-2" role="tabpanel" aria-labelledby="base-class-example-2-tab">
-                    <div class="row padding-t">
-                        <div class="col">
-                            <h5>Your C# Code</h5>
+        <!-- Base Class Example #2 Tab -->
+        <div class="tab-pane fade" id="base-class-example-2" role="tabpanel" aria-labelledby="base-class-example-2-tab">
+          <div class="row padding-t">
+            <div class="col">
+              <h5>Your C# Code</h5>
 <pre><code class="csharp">public abstract class MyDatabase {
     /// &lt;summary&gt;
     /// This will do something
@@ -183,11 +194,11 @@ public class MyCoolDatabase : MyDatabase {
 public class MyReallyCoolDatabase : MyCoolDatabase {
 }
 </code></pre>
-                        </div>
-                    </div>
-                    <div class="row padding-t">
-                        <div class="col">
-                            <h5>XML documentation file without InheritDoc</h5>
+            </div>
+          </div>
+          <div class="row padding-t">
+            <div class="col">
+              <h5>XML documentation file without InheritDoc</h5>
 <pre><code class="xml code-sample">&lt;members&gt;
     &lt;member name=&quot;M:MyDatabase.DoSomething&quot;&gt;
         &lt;summary&gt;
@@ -205,9 +216,9 @@ public class MyReallyCoolDatabase : MyCoolDatabase {
     &lt;-- Nothing generated for MyReallyCoolDatabase.RunSomething() --&gt;
 &lt;/members&gt;
 </code></pre>
-                        </div>
-                        <div class="col">
-                            <h5>XML documentation file with InheritDoc</h5>
+            </div>
+            <div class="col">
+              <h5>XML documentation file with InheritDoc</h5>
 <pre><code class="xml code-sample">&lt;members&gt;
     &lt;member name=&quot;M:MyDatabase.DoSomething&quot;&gt;
         &lt;summary&gt;
@@ -241,20 +252,20 @@ public class MyReallyCoolDatabase : MyCoolDatabase {
     &lt;/member&gt;
 &lt;/members&gt;
 </code></pre>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <p>Also note that if the <mark>&lt;inheritdoc&gt;</mark> tag is at the class or interface level then all member comments are automatically inherited without needing to specify an <mark>&lt;inheritdoc&gt;</mark> tag on each member.</p>
-                        </div>
-                    </div>
-                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <p>Also note that if the <mark>&lt;inheritdoc&gt;</mark> tag is at the class or interface level then all member comments are automatically inherited without needing to specify an <mark>&lt;inheritdoc&gt;</mark> tag on each member.</p>
+            </div>
+          </div>
+        </div>
 
-                <!-- Interface Example Tab -->
-                <div class="tab-pane fade" id="interface-example" role="tabpanel" aria-labelledby="interface-example-tab">
-                    <div class="row padding-t">
-                        <div class="col">
-                            <h5>Your C# Code</h5>
+        <!-- Interface Example Tab -->
+        <div class="tab-pane fade" id="interface-example" role="tabpanel" aria-labelledby="interface-example-tab">
+          <div class="row padding-t">
+            <div class="col">
+              <h5>Your C# Code</h5>
 <pre><code class="csharp">public interface IDatabase {
     /// &lt;summary&gt;
     /// A long detailed description about this method
@@ -267,11 +278,11 @@ public class MyCoolDatabase : IDatabase {
     public override void DoSomething();
 }
 </code></pre>
-                        </div>
-                    </div>
-                    <div class="row padding-t">
-                        <div class="col">
-                            <h5>XML documentation file without InheritDoc</h5>
+            </div>
+          </div>
+          <div class="row padding-t">
+            <div class="col">
+              <h5>XML documentation file without InheritDoc</h5>
 <pre><code class="xml code-sample">&lt;members&gt;
     &lt;member name=&quot;M:IDatabase.DoSomething&quot;&gt;
         &lt;summary&gt;
@@ -281,9 +292,9 @@ public class MyCoolDatabase : IDatabase {
     &lt;-- Nothing generated for MyDatabase.DoSomething() --&gt;
 &lt;/members&gt;
 </code></pre>
-                        </div>
-                        <div class="col">
-                            <h5>XML documentation file with InheritDoc</h5>
+            </div>
+            <div class="col">
+              <h5>XML documentation file with InheritDoc</h5>
 <pre><code class="xml code-sample">&lt;members&gt;
     &lt;member name=&quot;M:IDatabase.DoSomething&quot;&gt;
         &lt;summary&gt;
@@ -297,15 +308,15 @@ public class MyCoolDatabase : IDatabase {
     &lt;/member&gt;
 &lt;/members&gt;
 </code></pre>
-                        </div>
-                    </div>
-                </div>
+            </div>
+          </div>
+        </div>
 
-                <!-- Similar Method Example Tab -->
-                <div class="tab-pane fade" id="similar-method-example" role="tabpanel" aria-labelledby="similar-method-example-tab">
-                    <div class="row padding-t">
-                        <div class="col">
-                            <h5>Your C# Code</h5>
+        <!-- Similar Method Example Tab -->
+        <div class="tab-pane fade" id="similar-method-example" role="tabpanel" aria-labelledby="similar-method-example-tab">
+          <div class="row padding-t">
+            <div class="col">
+              <h5>Your C# Code</h5>
 <pre><code class="csharp">public abstract class MyDatabase {
     /// &lt;summary&gt;
     /// A long detailed description about this method
@@ -316,11 +327,11 @@ public class MyCoolDatabase : IDatabase {
     public abstract Task RunSomethingAsync();
 }
 </code></pre>
-                        </div>
-                    </div>
-                    <div class="row padding-t">
-                        <div class="col">
-                            <h5>XML documentation file without InheritDoc</h5>
+            </div>
+          </div>
+          <div class="row padding-t">
+            <div class="col">
+              <h5>XML documentation file without InheritDoc</h5>
 <pre><code class="xml code-sample">&lt;members&gt;
     &lt;member name=&quot;M:MyDatabase.RunSomething&quot;&gt;
         &lt;summary&gt;
@@ -330,9 +341,9 @@ public class MyCoolDatabase : IDatabase {
     &lt;-- Nothing generated for MyDatabase.RunSomethingAsync() --&gt;
 &lt;/members&gt;
 </code></pre>
-                        </div>
-                        <div class="col">
-                            <h5>XML documentation file with InheritDoc</h5>
+            </div>
+            <div class="col">
+              <h5>XML documentation file with InheritDoc</h5>
 <pre><code class="xml code-sample">&lt;members&gt;
     &lt;member name=&quot;M:MyDatabase.RunSomething&quot;&gt;
         &lt;summary&gt;
@@ -346,67 +357,67 @@ public class MyCoolDatabase : IDatabase {
     &lt;/member&gt;
 &lt;/members&gt;
 </code></pre>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </section>
-        <section>
-            <h3>Getting Started</h3>
-            <p>InheritDoc is available in three flavors...</p>
-            <ol>
-                <li>The <i>InheritDoc</i> nuget package installs a .NET Framework EXE that can be run from a command prompt</li>
-                <li>The <i>InheritDocTool</i> nuget package installs as a .NET Core global tool</li>
-                <li>The <i>InheritDoc Visual Studio Extension</i> installs as an extension into Visual Studio</li>
-            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h3>Getting Started</h3>
+      <p>InheritDoc is available in three flavors...</p>
+      <ol>
+        <li>The <i>InheritDoc</i> nuget package installs a .NET Framework EXE that can be run from a command prompt</li>
+        <li>The <i>InheritDocTool</i> nuget package installs as a .NET Core global tool</li>
+        <li>The <i>InheritDoc Visual Studio Extension</i> installs as an extension into Visual Studio</li>
+      </ol>
 
-            <h4>InheritDoc</h4>
-            <ol>
-                <li>
-                    Install <strong>InheritDoc</strong> in your solution by entering this in the <em>Package Manager Console</em>...
-                    <pre><code>Install-Package InheritDoc</code></pre>
-                </li>
-                <li>
-                    Run <strong>InheritDoc</strong> by entering this in the <em>Package Manager Console</em>...
-                    <pre><code>.\packages\InheritDoc.2.3.0\tools\InheritDoc</code></pre>
-                    <p>-or-</p>
-                    <pre><code>\Users\<span class="text-danger">&lt;your user name&gt;</span>\.nuget\packages\inheritdoc\2.3.0\tools\InheritDoc.exe</code></pre>
-                    <p>The path depends on the type of project (.NET Framework vs .NET Standard/Core).
-                </li>
-            </ol>
-            <p class="tip"><b>Tip:</b> Run with a <em>--help</em> switch to see a list of command line switches available.</p>
+      <h4>InheritDoc</h4>
+      <ol>
+        <li>
+          Install <strong>InheritDoc</strong> in your solution by entering this in the <em>Package Manager Console</em>...
+          <pre><code>Install-Package InheritDoc</code></pre>
+        </li>
+        <li>
+          Run <strong>InheritDoc</strong> by entering this in the <em>Package Manager Console</em>...
+          <pre><code>.\packages\InheritDoc.2.5.0\tools\InheritDoc</code></pre>
+          <p>-or-</p>
+          <pre><code>\Users\<span class="text-danger">&lt;your user name&gt;</span>\.nuget\packages\inheritdoc\2.5.0\tools\InheritDoc.exe</code></pre>
+          <p>The path depends on the type of project (.NET Framework vs .NET Standard/Core).
+        </li>
+      </ol>
+      <p class="tip"><b>Tip:</b> Run with a <em>--help</em> switch to see a list of command line switches available.</p>
 
-            <h4>InheritDocTool</h4>
-            <ol>
-                <li>
-                    Install <strong>InheritDoc</strong> as a .NET Core global tool by executing in <em>Package Manager Console</em>...
-                    <pre><code>dotnet tool install -g InheritDocTool</code></pre>
-                </li>
-                <li>
-                    Run <strong>InheritDocTool</strong> by entering this in the <em>Package Manager Console</em>...
-                    <pre><code>InheritDoc</code></pre>
-                </li>
-            </ol>
-            <p class="tip"><b>Tip:</b> Run with a <em>--help</em> switch to see a list of command line switches available.</p>
+      <h4>InheritDocTool</h4>
+      <ol>
+        <li>
+          Install <strong>InheritDoc</strong> as a .NET Core global tool by executing in <em>Package Manager Console</em>...
+          <pre><code>dotnet tool install -g InheritDocTool</code></pre>
+        </li>
+        <li>
+          Run <strong>InheritDocTool</strong> by entering this in the <em>Package Manager Console</em>...
+          <pre><code>InheritDoc</code></pre>
+        </li>
+      </ol>
+      <p class="tip"><b>Tip:</b> Run with a <em>--help</em> switch to see a list of command line switches available.</p>
 
-            <h4>InheritDoc Visual Studio Extension</h4>
-            <ol>
-                <li>
-                    Install <strong>InheritDoc Visual Studio Extension</strong> from <b><a href="https://marketplace.visualstudio.com/items?itemName=fireshark.InheritDoc">here</a></b>
-                </li>
-                <li>
-                    <p>Run <strong>InheritDoc</strong> manually by choosing <em>Tools > Run InheritDoc now</em> from the Visual Studio menu</p><p>-OR-</p><p>Change the mode to <em>Automatic</em> (under <em>Tools > Options > InheritDoc</em> and <b>InheritDoc</b> will run automatically after each solution build</p>
-                </li>
-            </ol>
+      <h4>InheritDoc Visual Studio Extension</h4>
+      <ol>
+        <li>
+          Install <strong>InheritDoc Visual Studio Extension</strong> from <b><a href="https://marketplace.visualstudio.com/items?itemName=fireshark.InheritDoc">here</a></b>
+        </li>
+        <li>
+          <p>Run <strong>InheritDoc</strong> manually by choosing <em>Tools > Run InheritDoc now</em> from the Visual Studio menu</p><p>-OR-</p><p>Change the mode to <em>Automatic</em> (under <em>Tools > Options > InheritDoc</em> and <b>InheritDoc</b> will run automatically after each solution build</p>
+        </li>
+      </ol>
 
-        </section>
-        <section>
-            <h3>Trying on a Sample Project</h3>
-            <ol>
-                <li>Create a new <em>Class Library Project</em> in <em>Visual Studio</em> called <em>InheritDocTest</em></li>
-                <li>
-                    Add these classes to <em>Program.cs</em>...
-                    <pre><code class="csharp">namespace InheritDocTest {
+    </section>
+    <section>
+      <h3>Trying on a Sample Project</h3>
+      <ol>
+        <li>Create a new <em>Class Library Project</em> in <em>Visual Studio</em> called <em>InheritDocTest</em></li>
+        <li>
+          Add these classes to <em>Program.cs</em>...
+          <pre><code class="csharp">namespace InheritDocTest {
     /// &lt;summary&gt;
     /// ClassA Summary
     /// &lt;/summary&gt;
@@ -418,12 +429,12 @@ public class MyCoolDatabase : IDatabase {
     }
 }
 </code></pre>
-                </li>
-                <li>Right click the <em>InheritDocTest</em> project, click <em>Properties</em>, click <em>Build</em>, and check the <em>XML documentation file</em> checkbox</li>
-                <li>Click <em>Build</em> > <em>Rebuild Solution</em> menu item</li>
-                <li>
-                    Open <em>InheritDocTest/bin/Debug/InheritDocTest.xml</em> and confirm it looks like...
-                    <pre><code class="xml">&lt;?xml version="1.0" ?&gt;
+        </li>
+        <li>Right click the <em>InheritDocTest</em> project, click <em>Properties</em>, click <em>Build</em>, and check the <em>XML documentation file</em> checkbox</li>
+        <li>Click <em>Build</em> > <em>Rebuild Solution</em> menu item</li>
+        <li>
+          Open <em>InheritDocTest/bin/Debug/InheritDocTest.xml</em> and confirm it looks like...
+          <pre><code class="xml">&lt;?xml version="1.0" ?&gt;
 &lt;doc&gt;
     &lt;assembly&gt;
         &lt;name&gt;InheritDocTest&lt;/name&gt;
@@ -440,10 +451,10 @@ public class MyCoolDatabase : IDatabase {
     &lt;/members&gt;
 &lt;/doc&gt;
 </code></pre>
-                </li>
-                <li>
-                    Now run either the <em>InheritDoc Command Line Tool</em> or <em>InheritDoc Visual Studio Extension</em> on this project and confirm a new <em>InheritDocTest/bin/Debug/InheritDocTest.<span class="text-danger">new</span>.xml</em> file looks like...
-                    <pre><code class="xml">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+        </li>
+        <li>
+          Now run either the <em>InheritDoc Command Line Tool</em> or <em>InheritDoc Visual Studio Extension</em> on this project and confirm a new <em>InheritDocTest/bin/Debug/InheritDocTest.<span class="text-danger">new</span>.xml</em> file looks like...
+          <pre><code class="xml">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
 &lt;doc&gt;
     &lt;assembly&gt;
         &lt;name&gt;InheritDocTest&lt;/name&gt;
@@ -458,127 +469,129 @@ public class MyCoolDatabase : IDatabase {
     &lt;/members&gt;
 &lt;/doc&gt;
 </code></pre>
-                </li>
-            </ol>
-            <p>Notice the <em>&lt;inheritdoc/&gt;</em> has been replaced with the parent class comments as expected.</p>
-            <p>To overwrite the original <em>.xml</em> files, run the <em>InheritDoc Command Line Tool</em> with a <em>-o</em> switch or change the <em>InheritDoc Visual Studio Extension</em> options (under <em>Tool > Options > InhertiDoc</em>) to overwrite existing files.</p>
-        </section>
-        <section>
-            <h3>Recommended Release Process</h3>
-            <p>Here are the recommended steps to do a release of your product with the appropriate documentation...</p>
-            <ol>
-                <li>Build your project as normal</li>
-                <li>Run <b>InheritDoc</b> to rewrite the XML documentation files replacing &lt;inheritdoc/&gt; tags with the appropriate XML comments</li>
-                <li>Run your favorite documentation generator (like <a href="http://ejball.com/XmlDocMarkdown/">XmlDocMarkdown</a> or <a href="https://dotnet.github.io/docfx/">DocFx</a>) to generate your HTML or Markdown documentation</li>
-                <li>Publish your new HTML or Markdown documentation (perhaps pushing Markdown documentation to your Github repository)</li>
-                <li>Build and publish your NuGet package (the updated XML documentation files will allow users to see the right <em>Intellisense</em> tips)</li>
-            </ol>
-        </section>
-        <section>
-            <h3>FAQ</h3>
+        </li>
+      </ol>
+      <p>Notice the <em>&lt;inheritdoc/&gt;</em> has been replaced with the parent class comments as expected.</p>
+      <p>To overwrite the original <em>.xml</em> files, run the <em>InheritDoc Command Line Tool</em> with a <em>-o</em> switch or change the <em>InheritDoc Visual Studio Extension</em> options (under <em>Tool > Options > InhertiDoc</em>) to overwrite existing files.</p>
+    </section>
+    <section>
+      <h3>Recommended Release Process</h3>
+      <p>Here are the recommended steps to do a release of your product with the appropriate documentation...</p>
+      <ol>
+        <li>Build your project as normal</li>
+        <li>Run <b>InheritDoc</b> to rewrite the XML documentation files replacing &lt;inheritdoc/&gt; tags with the appropriate XML comments</li>
+        <li>Run your favorite documentation generator (like <a href="http://ejball.com/XmlDocMarkdown/">XmlDocMarkdown</a> or <a href="https://dotnet.github.io/docfx/">DocFx</a>) to generate your HTML or Markdown documentation</li>
+        <li>Publish your new HTML or Markdown documentation (perhaps pushing Markdown documentation to your Github repository)</li>
+        <li>Build and publish your NuGet package (the updated XML documentation files will allow users to see the right <em>Intellisense</em> tips)</li>
+      </ol>
+    </section>
+    <section>
+      <h3>FAQ</h3>
 
-            <blockquote class="blockquote">
-                Does InheritDoc modify my source code?
-            </blockquote>
-            <p>No, <b>InheritDoc</b> modifies the XML documentation files associated with your assembly instead of modifying the source code</p>
+      <blockquote class="blockquote">
+        Does InheritDoc modify my source code?
+      </blockquote>
+      <p>No, <b>InheritDoc</b> modifies the XML documentation files associated with your assembly instead of modifying the source code</p>
 
-            <hr />
+      <hr />
 
-            <blockquote class="blockquote">
-                Does InheritDoc allow Visual Studio Intellisense to have the right comments?
-            </blockquote>
-            <p><b>InheritDoc</b> does not help Intellisense to show the right comments when you have the source files open (Visual Studio doesn't read the modified XML documentation files when the source files are available).</p>
-            <p><b>InheritDoc</b> does allow Intellisense to show the right comments from binary references that have modified XML documentation files (like binary references in NuGet packages).</p>
+      <blockquote class="blockquote">
+        Does InheritDoc allow Visual Studio Intellisense to have the right comments?
+      </blockquote>
+      <p><b>InheritDoc</b> does not help Intellisense to show the right comments when you have the source files open (Visual Studio doesn't read the modified XML documentation files when the source files are available).</p>
+      <p><b>InheritDoc</b> does allow Intellisense to show the right comments from binary references that have modified XML documentation files (like binary references in NuGet packages).</p>
 
-            <hr />
+      <hr />
 
-            <blockquote class="blockquote">
-                Does InheritDoc integrate with Visual Studio?
-            </blockquote>
-            <p><b>InheritDoc</b> is available as a command line tool (install via <a href="https://www.nuget.org/packages/InheritDoc/">NuGet</a>) and available as a Visual Studio extension (install from <a href="https://marketplace.visualstudio.com/items?itemName=fireshark.InheritDoc">Visual Studio Marketplace</a>).  The command line tool does not integrate with Visual Studio.  The Visual Studio extension does integrate with Visual Studio.</p>
+      <blockquote class="blockquote">
+        Does InheritDoc integrate with Visual Studio?
+      </blockquote>
+      <p><b>InheritDoc</b> is available as a command line tool (install via <a href="https://www.nuget.org/packages/InheritDoc/">NuGet</a>) and available as a Visual Studio extension (install from <a href="https://marketplace.visualstudio.com/items?itemName=fireshark.InheritDoc">Visual Studio Marketplace</a>).  The command line tool does not integrate with Visual Studio.  The Visual Studio extension does integrate with Visual Studio.</p>
 
-            <hr />
+      <hr />
 
-            <blockquote class="blockquote">
-                How can I inherit the comments for a System class (like System.Exception)?
-            </blockquote>
-            <p>Use the -g switch with a comma delimited list of the source XML documents for the appropriate System classes (like -g"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.X\mscorlib.xml").</p>
+      <blockquote class="blockquote">
+        How can I inherit the comments for a System class (like System.Exception)?
+      </blockquote>
+      <p>Use the -g switch with a comma delimited list of the source XML documents for the appropriate System classes (like -g"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.X\mscorlib.xml").</p>
 
-            <hr />
+      <hr />
 
-            <blockquote class="blockquote">
-                I'm using a -g switch to extend the documentation on a System class, how can I exclude the XML comments for System.Object?
-            </blockquote>
-            <p>Use the -x switch with a comma delimited list of classes to exclude from inheriting from (like -xSystem.Object)</p>
-        </section>
-        <section>
-            <h3>Release Notes</h3>
-            <ul>
-                <li>v2.3.0 (8/28/2019) - Changed license to use Mozilla Public License 2.0</li>
-                <li>v2.2.1 (5/23/2019) - Fix for published projects targeting .NET Core win-* runtime (thanks <a href="https://github.com/alexalok">alexalok</a>)</li>
-                <li>v2.2.0 (5/1/2019) - Deployed and rolled back support for VS 2019</li>
-                <li>v2.0.2 (10/23/2018) - Fixed wrong version number in VSIX package</li>
-                <li>v2.0.1 (10/23/2018) - Changed InheritDocLib to shared project to avoid loading issues for VSIX</li>
-                <li>v2.0.0 (8/23/2018) - Converted InheritDocLib to also target .NET Core (thanks <a href="https://github.com/johan-v-r">johan-v-r</a>)</li>
-                <li>v1.2.3 (8/21/2018) - Upgraded to latest version of Mono.Cecil</li>
-                <li>v1.2.2.1 (8/12/2018) - Fixed issue not finding base types in cref attributes searching global source xml files</li>
-                <li>v1.2.1.1 (8/5/2018) - Added option to exclude comments from types (defaults to System.Object)</li>
-                <li>v1.2.0.1 (7/15/2018) - Added support for extending system classes (like System.Exception)</li>
-                <li>v1.1.1.1 (6/4/2018) - Fixed crash attempting to load non .NET DLLs</li>
-                <li>v1.1.0.1 (5/9/2018) - Eliminated proprietary licensing</li>
-                <li>v1.0.4.1 (1/19/2018) - Changed target framework to 4.5 from 4.6.2</li>
-                <li>v1.0.2.1 (1/3/2018) - No longer merges identical tags, maintains UTF8 without BOM, and maintains whitespace formatting</li>
-                <li>v1.0.0.342 (1/2/2018) - Added support for .NET Framework and .NET Core projects</li>
-                <li>v1.0.0.0 (12/19/2017) - Initial release</li>
-            </ul>
-        </section>
-        <section>
-            <h3>Licensing</h3>
-            <p><em>InheritDoc</em> uses the <a href="https://www.mozilla.org/en-US/MPL/2.0/">Mozilla Public License 2.0</a>.</p>
-        </section>
-        <section>
-            <h3>Contact Me</h3>
-            <p>Contact me at <a href="mailto:kent@fireshark.com">kent@fireshark.com</a> if you have any questions, concerns, or ideas.</p>
-        </section>
-        <section style="text-align: center">
-            <span style="padding: 0.5rem; background-color: lightcyan">Build a real-time web app using C# on the server and Vue.js on the client -- checkout <a href="https://butterflyserver.io">Butterfly Server .NET</a> on GitHub</span>
-        </section>
-        <hr />
-        <p class="text-center">Copyright 2017-2018, Fireshark Studios, LLC</p>
-    </div>
-    <script src="//use.fontawesome.com/c77a0daac9.js"></script>
-    <script src="//code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <script src="//checkout.stripe.com/checkout.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
+      <blockquote class="blockquote">
+        I'm using a -g switch to extend the documentation on a System class, how can I exclude the XML comments for System.Object?
+      </blockquote>
+      <p>Use the -x switch with a comma delimited list of classes to exclude from inheriting from (like -xSystem.Object)</p>
+    </section>
+    <section>
+      <h3>Release Notes</h3>
+      <ul>
+        <li>v2.5.0 (1/27/2020) - Added support for VS 2019 extension (thanks <a href="https://github.com/pschoffer">pschoffer</a>)</li>
+        <li>v2.3.0 (8/28/2019) - Changed license to use Mozilla Public License 2.0</li>
+        <li>v2.2.1 (5/23/2019) - Fix for published projects targeting .NET Core win-* runtime (thanks <a href="https://github.com/alexalok">alexalok</a>)</li>
+        <li>v2.2.0 (5/1/2019) - Deployed and rolled back support for VS 2019</li>
+        <li>v2.0.2 (10/23/2018) - Fixed wrong version number in VSIX package</li>
+        <li>v2.0.1 (10/23/2018) - Changed InheritDocLib to shared project to avoid loading issues for VSIX</li>
+        <li>v2.0.0 (8/23/2018) - Converted InheritDocLib to also target .NET Core (thanks <a href="https://github.com/johan-v-r">johan-v-r</a>)</li>
+        <li>v1.2.3 (8/21/2018) - Upgraded to latest version of Mono.Cecil</li>
+        <li>v1.2.2.1 (8/12/2018) - Fixed issue not finding base types in cref attributes searching global source xml files</li>
+        <li>v1.2.1.1 (8/5/2018) - Added option to exclude comments from types (defaults to System.Object)</li>
+        <li>v1.2.0.1 (7/15/2018) - Added support for extending system classes (like System.Exception)</li>
+        <li>v1.1.1.1 (6/4/2018) - Fixed crash attempting to load non .NET DLLs</li>
+        <li>v1.1.0.1 (5/9/2018) - Eliminated proprietary licensing</li>
+        <li>v1.0.4.1 (1/19/2018) - Changed target framework to 4.5 from 4.6.2</li>
+        <li>v1.0.2.1 (1/3/2018) - No longer merges identical tags, maintains UTF8 without BOM, and maintains whitespace formatting</li>
+        <li>v1.0.0.342 (1/2/2018) - Added support for .NET Framework and .NET Core projects</li>
+        <li>v1.0.0.0 (12/19/2017) - Initial release</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Licensing</h3>
+      <p><em>InheritDoc</em> uses the <a href="https://www.mozilla.org/en-US/MPL/2.0/">Mozilla Public License 2.0</a>.</p>
+    </section>
+    <section>
+      <h3>Contact Me</h3>
+      <p>Contact me at <a href="mailto:kent@fireshark.com">kent@fireshark.com</a> if you have any questions, concerns, or ideas.</p>
+    </section>
+    <section style="text-align: center">
+      <span style="padding: 0.5rem; background-color: lightcyan">Build a real-time web app using C# on the server and Vue.js on the client -- checkout <a href="https://butterflyserver.io">Butterfly Server .NET</a> on GitHub</span>
+    </section>
+    <hr />
+    <p class="text-center">Copyright 2017-2018, Fireshark Studios, LLC</p>
+  </div>
+  <script src="//use.fontawesome.com/c77a0daac9.js"></script>
+  <script src="//code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <script src="//checkout.stripe.com/checkout.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 
-    <script>
-        var handler = StripeCheckout.configure({
-            key: window.location.hostname == 'localhost' ? 'pk_test_WVGoPTIuKfOfzBaLXwT4x7l7' : 'pk_live_JRMlFyh1K9NVgSJLRDXks1CT',
-            image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-            locale: 'auto',
-            token: function (token) {
-                $.post(
-                    'https://api.inheritdoc.io/api/stripe-charge-callback',
-                    {
-                        stripeToken: token.id,
-                        stripeEmail: token.email,
-                        function() {
-                            $('#payment-message').text('Your payment has been submitted, you will receive an email with the license key shortly.');
-                            $('#payment-alert').addClass('alert-success show');
-                        }
-                    }
-                ).fail(function (response) {
-                    $('#payment-message').text('An error has occurred processing your payment.');
-                    $('#payment-alert').addClass('alert-danger show');
-                });
+  <script>
+    var handler = StripeCheckout.configure({
+      key: window.location.hostname == 'localhost' ? 'pk_test_WVGoPTIuKfOfzBaLXwT4x7l7' : 'pk_live_JRMlFyh1K9NVgSJLRDXks1CT',
+      image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+      locale: 'auto',
+      token: function (token) {
+        $.post(
+          'https://api.inheritdoc.io/api/stripe-charge-callback',
+          {
+            stripeToken: token.id,
+            stripeEmail: token.email,
+            function() {
+              $('#payment-message').text('Your payment has been submitted, you will receive an email with the license key shortly.');
+              $('#payment-alert').addClass('alert-success show');
             }
+          }
+        ).fail(function (response) {
+          $('#payment-message').text('An error has occurred processing your payment.');
+          $('#payment-alert').addClass('alert-danger show');
         });
+      }
+    });
 
-        window.addEventListener('popstate', function () {
-            handler.close();
-        });
-    </script></body>
+    window.addEventListener('popstate', function () {
+      handler.close();
+    });
+  </script>
+</body>
 </html>

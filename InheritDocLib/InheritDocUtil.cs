@@ -441,12 +441,32 @@ namespace InheritDocLib {
         }
 
         static Dictionary<string, TypeData> GetTypeByName(AssemblyDefinition assemblyDefinition) {
-            var typeDatas = assemblyDefinition.MainModule.Types.Select(x => new TypeData {
-                name = x.FullName,
+
+            List<TypeData> result = new List<TypeData>();
+            foreach (var x in assemblyDefinition.MainModule.Types)
+            {
+                AddType(x, result);
+            }
+
+            return result.ToDictionary(x => x.name);
+        }
+
+        static void AddType(TypeDefinition x, List<TypeData> result)
+        {
+            result.Add(new TypeData
+            {
+                name = x.FullName.Replace("/","."),
                 interfaceTypeNames = x.Interfaces == null ? new string[] { } : x.Interfaces.Select(y => y.InterfaceType.FullName).ToArray(),
-                baseTypeName = x.BaseType?.FullName
+                baseTypeName = x.BaseType?.FullName.Replace("/", ".")
             });
-            return typeDatas.ToDictionary(x => x.name);
+
+            if (x.HasNestedTypes)
+            {
+                foreach (var y in x.NestedTypes)
+                {
+                    AddType(y, result);
+                }
+            }
         }
     }
 

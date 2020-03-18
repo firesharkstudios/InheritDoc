@@ -46,6 +46,7 @@ namespace InheritDocLib {
                 foreach (var pathPart in pathParts) {
                     var targetChildElements = targetCurrent.Elements(pathPart);
                     var sourceChildElements = sourceCurrent.Elements(pathPart);
+                    sourceCurrent = sourceChildElements.Single();
                     if (targetChildElements.Count()==0) {
                         var newTarget = new XElement(pathPart);
                         targetCurrent.Add(newTarget);
@@ -55,9 +56,11 @@ namespace InheritDocLib {
                         targetCurrent = targetChildElements.Single();
                     }
                     else {
-                        throw new System.Exception($"Found multiple target elements '{pathPart}'");
+                        var reader = sourceCurrent.Parent.CreateReader();
+                        reader.MoveToContent();
+                        var sourceXml = reader.ReadInnerXml();
+                        throw new System.Exception($"Found multiple target elements '{pathPart}' for '{sourceXml}'");
                     }
-                    sourceCurrent = sourceChildElements.Single();
                 }
             }
 

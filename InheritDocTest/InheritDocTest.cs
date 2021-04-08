@@ -242,7 +242,7 @@ namespace InheritDocTest {
                     xDocument,
                     "MyException",
                     "summary",
-                    new string[] { "Represents errors that occur during application execution.To browse the .NET Framework source code for this type, see the Reference Source." }
+                    new string[] { "Represents errors that occur during application execution." }
                 );
 
                 CheckForMethodComments(

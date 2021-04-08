@@ -46,16 +46,25 @@ namespace InheritDocLib {
                 foreach (var pathPart in pathParts) {
                     var targetChildElements = targetCurrent.Elements(pathPart);
                     var sourceChildElements = sourceCurrent.Elements(pathPart);
-                    sourceCurrent = sourceChildElements.Single();
                     if (targetChildElements.Count()==0) {
                         var newTarget = new XElement(pathPart);
                         targetCurrent.Add(newTarget);
                         targetCurrent = newTarget;
+                        sourceCurrent = sourceChildElements.Single();
                     }
                     else if (targetChildElements.Count()==1) {
                         targetCurrent = targetChildElements.Single();
+                        if (sourceChildElements.Count() == 1)
+                        {
+                            sourceCurrent = sourceChildElements.Single();
+                        }
+                        else
+                        {
+                            sourceCurrent = sourceChildElements.Single(s => s.Attribute("name")?.Value == targetCurrent.Attribute("name")?.Value);
+                        }
                     }
                     else {
+                        sourceCurrent = sourceChildElements.Single();
                         var reader = sourceCurrent.Parent.CreateReader();
                         reader.MoveToContent();
                         var sourceXml = reader.ReadInnerXml();
